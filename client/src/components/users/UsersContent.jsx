@@ -54,6 +54,22 @@ const UsersContent = () => {
     getData();
   };
 
+  const deleteUser = (e) =>{
+   
+    axios({
+      method: "delete",
+      url: `http://localhost:3001/users/${e}`,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+        getData();
+       console.log(response);
+      })
+    .catch((err) => console.log(err));
+  }
+
+ 
+
   const columns = [
     { name: "Name", uid: "fullName" },
     { name: "Username", uid: "username" },
@@ -81,7 +97,7 @@ const UsersContent = () => {
               <Tooltip
                 content="Delete user"
                 color="error"
-                onClick={() => console.log("Delete user", user._id)}
+                onClick={() => deleteUser(user._id)}
               >
                 <IconButton>
                   <DeleteIcon size={20} fill="#FF0080" />
@@ -164,7 +180,7 @@ const UsersContent = () => {
             </Table.Row>
           ))}
         </Table.Body>
-        <Table.Pagination shadow noMargin align="center" rowsPerPage={15} />
+        <Table.Pagination shadow noMargin align="center" rowsPerPage={10} />
       </Table>
     </div>
   );
