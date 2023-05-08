@@ -21,7 +21,7 @@ const Teams = () => {
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />
-        {/* <TeamsContent/> */}
+        <TeamsContent/>
       </main>
     </div>
   );

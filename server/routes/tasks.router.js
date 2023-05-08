@@ -6,24 +6,24 @@ import { verifyToken } from '../middleware/auth.middleware.js';
 const router = express.Router();
 
 // get team tasks
-router.get('/:teamId', verifyToken, getTasks);
+// router.get('/:teamId', verifyToken, getTasks);
 
-// get my tasks
-router.get('/:userId', verifyToken, getMyTasks);
+// // get my tasks
+// router.get('/:userId', verifyToken, getMyTasks);
 
-// get task
-router.get('/:teamId/:id', verifyToken, getTask);
+// // get task
+// router.get('/:teamId/:id', verifyToken, getTask);
 
-// create tasks
-router.post('/:teamId', verifyToken, createTask);
+// // create tasks
+// router.post('/:teamId', verifyToken, createTask);
 
-// Assign member to tasks
-router.patch('/:taskId', verifyToken, assignUser);
+// // Assign member to tasks
+// router.patch('/:taskId', verifyToken, assignUser);
 
-// Remove member from tasks
-// router.patch('/:taskId', verifyToken, removeUser);
+// // Remove member from tasks
+// // router.patch('/:taskId', verifyToken, removeUser);
 
-// delete task
-router.delete('/:taskId', verifyToken, deleteTask);
+// // delete task
+// router.delete('/:taskId', verifyToken, deleteTask);
 
 export default router;

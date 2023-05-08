@@ -4,19 +4,17 @@ import Task from "../models/task.model.js";
 // Create a new team
 export const createTeam = async (req, res) => {
   try {
-    // if request body is empty, return appropriate errors
-    if (req.body === undefined) {
-      return res.status(400).send("request doesn't contain body");
-    }
+    
 
     // get data from request body
-    let { name, description, admin, project } = req.body;
+    let { name, description, admin,teamMembers,project } = req.body;
 
     // create new Team
     const newTeam = new Team({
       name,
       description,
       admin,
+      teamMembers,
       project,
     });
 
@@ -31,36 +29,27 @@ export const createTeam = async (req, res) => {
 // get an existing team
 export const getTeam = async (req, res) => {
   try {
-    const { teamId, projectId } = req.params;
+    const { teamId} = req.params;
 
     // if id not in request object
     if (!id) return res.status(400).json({ msg: "id not found in request" });
 
     // get a team
-    const team = await Team.findOne({ _id: teamId, project: projectId });
+    const team = await Team.findOne({ _id: teamId});
 
-    // if team with the above if not found
     if (!team) return res.status(404).json({ message: "Team not found!" });
 
-    // return found team
     res.status(200).json({ team });
   } catch (err) {
-    // return error message
+    
     res.status(500).json({ error: err.message });
   }
 };
 
 export const getTeams = async (req, res) => {
   try {
-    // if the request body doesn't contain the appriopriate data
-    if (req.body == undefined)
-      return res.status(500).json({ error: "Bad Request" });
-
-    // get project id from url params
-    const { id } = req.params;
-
-    // get teams in project
-    const teams = await Team.find({ teamMembers: id });
+    
+    const teams = await Team.find();
     res.status(200).json(teams);
   } catch (err) {
     // return appropriate error message

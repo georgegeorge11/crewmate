@@ -1,201 +1,164 @@
-import { useState, useEffect } from "react";
-import * as React from "react";
-import {
-  Box,
-  useTheme,
-  Grid,
-  Paper,
-  styled,
-  Typography,
-  IconButton,
-  Popover,
-  Modal,
-  Fade,
-  Backdrop,
-} from "@mui/material";
-import FlexBetween from "../shared/FlexBetween";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { AddCircleOutlineOutlined, MoreHoriz, ArticleOutlined } from '@mui/icons-material';
 import Header from "../shared/Header";
-import TeamForm from "./TeamForm";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  borderRadius: "5px",
-  boxShadow: 2,
-  p: 4,
-};
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    height: '230px',
-    width: '230px',
-    borderRadius: '15px'
-}));
+import { Modal, Button, Text, Input, Card } from "@nextui-org/react";
+import axios from "axios";
+import './teams.css';
 
 const TeamsContent = () => {
-  const [teams, setTeams] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [openModal, setModalOpen] = React.useState(false);
-  const theme = useTheme();
-  const token = useSelector((state) => state.token);
- // const user = useSelector((state) => state.user);
-  const handleModalOpen = () => setModalOpen(true);
-  const handleModalClose = () => setModalOpen(false);
+  const [visible, setVisible] = React.useState(false);
+  const handler = () => setVisible(true);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [teams, setTeams] = useState([]);
+  const [admin, setAdmin] = useState({});
 
-  const getData = async () => {
+  const createNewTeam = async () => {
     axios({
-      method: 'get',
-      url: `http://localhost:3001/teams`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      method: "post",
+      url: "http://localhost:3001/teams",
+      headers: { Authorization: `Bearer ${token}` },
+      data: {
+        name: title,
+        description: description,
+        admin: user._id,
+        teamMembers: [user._id]
+      }
+    }
+    ).then((response) => {
+      const newTeam = response.data;
+      console.log(newTeam);
+    }).catch((error) => console.log(error))
+  };
+
+  const closeHandler = async () => {
+    setVisible(false);
+    await createNewTeam();
+    getTeams();
+  };
+
+  const token = useSelector((state) => state.token);
+  const user = useSelector((state) => state.user);
+
+
+  const getUser = async (e) => {
+    axios({
+      method: "get",
+      url: `http://localhost:3001/users/${e}`,
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        setTeams(response.data);
+        setAdmin(response.data);
+
+      })
+      .catch((err) => console.log(err));
+  }
+
+  const getTeams = async () => {
+    axios({
+      method: "GET",
+      url: "http://localhost:3001/teams",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        const teamsData = response.data;
+
+        setTeams(teamsData);
       })
       .catch((err) => console.log(err));
   };
 
+
+
   useEffect(() => {
-    getData();
-  }, []);
+    getTeams();
 
-  const handlePopoverClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  });
 
   return (
     <>
       <Header title="Teams" />
-      <FlexBetween >
-        <Grid container spacing={1}>
-          <Grid item xs={2}>
-            <Item sx={{ textAlign: "center" }}>
-              <IconButton sx={{ marginTop: "45px" }} onClick={handleModalOpen}>
-                <AddCircleOutlineOutlined
-                  sx={{
-                    fontSize: "36px",
-                    color: theme.palette.primary.main,
-                  }}
-                />
-              </IconButton>
-              <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                open={openModal}
-                onClose={handleModalClose}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                  timeout: 500,
-                }}
-              >
-                <Fade in={openModal}>
-                  <Box sx={style}>
-                    <Typography
-                      id="transition-modal-title"
-                      variant="h4"
-                      component="h2"
-                      sx={{ marginBottom: "20px" }}
-                    >
-                      Create a new team
-                    </Typography>
-                    <TeamForm
-                      id="transition-modal-description"
-                      sx={{ mt: 3, marginTop: "10px" }}
-                      openModal={openModal}
-                      setModalOpen={setModalOpen}
-                    />
-                  </Box>
-                </Fade>
-              </Modal>
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-                color={theme.palette.primary.main}
-              >
-                Add New Team
-              </Typography>
-            </Item>
-          </Grid>
-          {teams &&
-            teams.map((project) => (
-              <Grid item xs={2} key={project._id}>
-                <Item>
-                  <FlexBetween>
-                    <div color="green" borderradius="50%">
-                      <IconButton sx={{ color: "green" }}>
-                        <ArticleOutlined fontSize="15px" />
-                      </IconButton>
-                    </div>
-                    <div>
-                      <IconButton
-                        sx={{ top: "0px" }}
-                        onClick={handlePopoverClick}
-                      >
-                        <MoreHoriz sx={{ fontSize: "25px" }} />
-                      </IconButton>
-                      <Popover
-                        id={id}
-                        open={open}
-                        anchorEl={anchorEl}
-                        onClose={handlePopoverClose}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
-                        }}
-                      >
-                        <Typography sx={{ p: 2 }}>
-                          The content of the Popover.
-                        </Typography>
-                        <Typography sx={{ p: 2 }}>
-                          The content of the Popover.
-                        </Typography>
-                        <Typography sx={{ p: 2 }}>
-                          The content of the Popover.
-                        </Typography>
-                      </Popover>
-                    </div>
-                  </FlexBetween>
-                  <Box
-                    sx={{
-                      color: theme.palette.mode === "dark" ? "#fff" : "black",
-                    }}
-                  >
-                    <Typography variant="h6" fontWeight="bold">
-                      {project.title}
-                    </Typography>
-                  </Box>
-                  <Box>{project.description}</Box>
-                  <Box
-                    sx={{
-                      color: theme.palette.mode === "dark" ? "#fff" : "black",
-                      marginTop: "15px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Task Done: 2/5
-                  </Box>
-                </Item>
-              </Grid>
-            ))}
-        </Grid>
-      </FlexBetween>
+      <Button auto shadow onPress={handler}>
+        Create a new team
+      </Button>
+      <Modal
+        closeButton
+        preventClose
+        aria-labelledby="modal-title"
+        open={visible}
+        onClose={closeHandler}
+
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={22}>
+            Create a new team
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Input
+            clearable
+            bordered
+            value={title}
+            color="primary"
+            size="lg"
+            placeholder="Title"
+            onChange={(e) => setTitle(e.target.value)}
+
+          />
+          <Input
+            clearable
+            bordered
+            value={description}
+            color="primary"
+            size="lg"
+            placeholder="Description"
+            onChange={(e) => setDescription(e.target.value)}
+          />
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button auto flat color="error" onPress={closeHandler}>
+            Close
+          </Button>
+          <Button auto onPress={closeHandler}>
+            Create
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <div className="teams">
+        {teams.map((team) => {
+
+
+
+          return <Card key={team._id} css={{
+            width: "250px",
+            height: "auto",
+            margin: "20px"
+          }}>
+            <Card.Body >
+              <Text>Team name: {team.name}</Text>
+              <Text>Description: {team.description}</Text>
+
+
+              <Text>Admin: {team.admin}</Text>
+              <Text>Members: {team.teamMembers}</Text>
+              <Button
+                shadow color="primary" auto
+                css={{
+                  width: "100px",
+                  alignSelf: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  
+                }}>
+                Join team
+              </Button>
+            </Card.Body>
+          </Card>
+        })}
+      </div>
+
     </>
   );
 };

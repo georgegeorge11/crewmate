@@ -29,6 +29,7 @@ const UsersContent = () => {
   const [users, setUsers] = useState([]);
   const token = useSelector((state) => state.token);
   const [openModal, setModalOpen] = useState(false);
+  
 
  
 
@@ -46,6 +47,7 @@ const UsersContent = () => {
 
   useEffect(() => {
     getData();
+    
   });
 
   const handleModalOpen = () => setModalOpen(true);
@@ -54,6 +56,7 @@ const UsersContent = () => {
     getData();
   };
 
+ 
   const deleteUser = (e) =>{
    
     axios({
@@ -88,7 +91,7 @@ const UsersContent = () => {
             <Col css={{ d: "flex" }}></Col>
             <Col css={{ d: "flex" }}>
               <Tooltip content="Edit user">
-                <IconButton onClick={() => console.log("Edit user", user._id)}>
+                <IconButton onClick={() => console.log(user._id)}>
                   <EditIcon size={20} fill="#979797" />
                 </IconButton>
               </Tooltip>

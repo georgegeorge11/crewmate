@@ -6,7 +6,7 @@ import { verifyToken } from '../middleware/auth.middleware.js';
 const router = express.Router()
 
 // get all teams for a project
-router.get('/teams', verifyToken, getTeams);
+router.get('/', verifyToken, getTeams);
 
 // get a team in a project
 router.get('/:teamId/project/:projectId/', verifyToken, getTeam);
