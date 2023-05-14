@@ -47,7 +47,7 @@ const RegisterFrom = () => {
       .then((response) => {
         const savedUser = response.data;
         onSubmitProps.resetForm();
-        console.log(savedUser);
+        
       })
       .catch((error) => {
         console.log(error);

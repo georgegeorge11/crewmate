@@ -1,7 +1,9 @@
 import { Box, Button, TextField } from "@mui/material";
-import { Formik } from "formik";
-import * as yup from "yup";
 import axios from "axios";
+import { Formik } from "formik";
+import { useSelector } from "react-redux";
+import * as yup from "yup";
+
 
 const userSchema = yup.object().shape({
   fullName: yup.string().required("required"),
@@ -10,45 +12,50 @@ const userSchema = yup.object().shape({
   phoneNumber: yup.number().required("required"),
 });
 
-const initialeValuesUser = {
-  fullName: "",
-  username: "",
-  email: "",
-  phoneNumber: "",
-};
 
-const UsersForm = ({ children, openModal, setModalOpen }) => {
+
+const ModalUpdate = ({ children, updateModal, setModalOpen, id, userData }) => {
+  const token = useSelector((state) => state.token);
+
   const handleModalClose = () => {
     setModalOpen(false);
   };
 
-  const newUser = async (values, onSubmitProps) => {
-    axios
-      .post("http://localhost:3001/users", {
-        fullName: values.fullName,
-        username: values.username,
-        email: values.email,
-        password: "",
-        phoneNumber: values.phoneNumber,
-      })
-      .then((response) => {
-        const savedUser = response.data;
-        onSubmitProps.resetForm();
-        console.log(savedUser);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const initialeValuesUpdate = {
+    fullName: userData.fullName,
+    username: userData.username,
+    email: userData.email,
+    phoneNumber: userData.phoneNumber,
   };
 
-  const handleFormUser = async (values, onSubmitProps) => {
-    await newUser(values, onSubmitProps);
-  };
+
+  const updateUserDetails = async (values, onSubmitProps) => {
+    axios({
+      method: "PUT",
+      url: `http://localhost:3001/users/${id}`,
+      data: values,
+      headers: { Authorization: `Bearer ${token}` },
+
+    }).then((response) => {
+      const savedUser = response.data;
+      console.log(savedUser);
+      onSubmitProps.resetForm();
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  const handleUpdateUser = async (values, onSubmitProps) => {
+    await updateUserDetails(values, onSubmitProps);
+  }
+
+
+
 
   return (
     <Formik
-      onSubmit={handleFormUser}
-      initialValues={initialeValuesUser}
+      onSubmit={handleUpdateUser}
+      initialValues={initialeValuesUpdate}
       validationSchema={userSchema}
     >
       {({
@@ -110,35 +117,23 @@ const UsersForm = ({ children, openModal, setModalOpen }) => {
                 helperText={touched.phoneNumber && errors.phoneNumber}
                 sx={{ gridColumn: "span 2" }}
               />
-            
+
             </>
           </Box>
           <Box>
             <Button
               type="submit"
-              sx={{
-                m: "2rem 0",
-                p: "1rem",
-                backgroundColor: "#00D5FA",
-                color: "#1A1A1A",
-                "&:hover": "#00D5FA",
-                width: "70%",
-              }}
-            >
-              Create a new user
-            </Button>
-            <Button
               onClick={handleModalClose}
               sx={{
                 m: "2rem 0",
-                ml: "35px",
                 p: "1rem",
                 backgroundColor: "#00D5FA",
                 color: "#1A1A1A",
                 "&:hover": "#00D5FA",
+                width: "100%",
               }}
             >
-              Close
+              Update user & close
             </Button>
           </Box>
         </form>
@@ -147,4 +142,4 @@ const UsersForm = ({ children, openModal, setModalOpen }) => {
   );
 };
 
-export default UsersForm;
+export default ModalUpdate;

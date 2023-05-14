@@ -11,23 +11,19 @@ import {
   Select,
   MenuItem,
   FormControl,
-  useTheme,
   useMediaQuery,
 } from "@mui/material";
 import "./style.css";
 import {
   Search,
-  DarkModeOutlined,
-  LightModeOutlined,
   NotificationsOutlined,
-  Help,
   Menu as MenuIcon,
   Close,
   SettingsOutlined,
   ArrowDropDownOutlined,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout } from "../state";
+import {  setLogout } from "../state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 
@@ -44,8 +40,7 @@ const Topbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const handleClose = () => setAnchorEl(null);
   const neutralLight = "#333333";
   const dark = "#E0E0E0";
-  const background = "#0A0A0A";
-
+  
   const username = `${user.fullName}`;
   const role = `${user.role}`;
   return (

@@ -5,9 +5,9 @@ import User from "../models/user.model.js";
 const createUser = async (req, res) => {
   try {
     const { fullName, email, username, phoneNumber, password } = req.body;
-
+    
     const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(password, salt);
+    const hashPassword = await (password===null | undefined ? bcrypt.hash("password", salt) : bcrypt.hash(password, salt));
     const user = new User({
       fullName,
       email,
@@ -27,7 +27,7 @@ const createUser = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    // const user = await User.findById({_id : id});
+    console.log(id);
     const user = await User.findById({ _id: id});
     if (!user) return res.status(404).json({ message: "User not found." });
    

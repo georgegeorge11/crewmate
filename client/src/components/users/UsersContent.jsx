@@ -11,6 +11,7 @@ import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
 import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
 import UsersForm from "./UsersForm";
+import ModalUpdate from "./ModalUpdate";
 
 
 const style = {
@@ -29,9 +30,19 @@ const UsersContent = () => {
   const [users, setUsers] = useState([]);
   const token = useSelector((state) => state.token);
   const [openModal, setModalOpen] = useState(false);
-  
+  const [updateModal, setUpdateOpen] = useState(false);
+   const [selectedUser, setSelectedUser] = useState({});
+   const [userId, setUserId] = useState(null);
 
- 
+  const columns = [
+    { name: "Name", uid: "fullName" },
+    { name: "Username", uid: "username" },
+    { name: "Email", uid: "email" },
+    { name: "Phone Number", uid: "phoneNumber" },
+    { name: "Role", uid: "role" },
+    { name: "ACTIONS", uid: "actions" },
+  ];
+
 
   const getData = async () => {
     axios({
@@ -45,9 +56,25 @@ const UsersContent = () => {
       .catch((err) => console.log(err));
   };
 
+  const getUser = (e) => {
+    setUserId(e);
+    axios
+    ({
+      method: "get",
+      url: `http://localhost:3001/users/${e}`,
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      console.log(response.data);
+      setSelectedUser(response.data);
+      updateUser();
+    }).catch((err) => console.log(err))
+  }
+
   useEffect(() => {
     getData();
-    
+   
+
   });
 
   const handleModalOpen = () => setModalOpen(true);
@@ -55,32 +82,37 @@ const UsersContent = () => {
     setModalOpen(false);
     getData();
   };
+  const handleUpdateModalOpen = () => setUpdateOpen(true);
+  const handleUpdateModalClose = () => {
+    setUpdateOpen(false);
+    getData();
+  };
 
- 
-  const deleteUser = (e) =>{
-   
+
+  const deleteUser = (e) => {
+
     axios({
       method: "delete",
       url: `http://localhost:3001/users/${e}`,
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then((response) => {
+      .then((response) => {
         getData();
-       console.log(response);
+        console.log(response);
       })
-    .catch((err) => console.log(err));
+      .catch((err) => console.log(err));
+  }
+  const openUpdateModal = () => {
+   
+    handleUpdateModalOpen();
   }
 
- 
+  const updateUser = () => {
+   
+    openUpdateModal();
+  }
 
-  const columns = [
-    { name: "Name", uid: "fullName" },
-    { name: "Username", uid: "username" },
-    { name: "Email", uid: "email" },
-    { name: "Phone Number", uid: "phoneNumber" },
-    { name: "Role", uid: "role" },
-    { name: "ACTIONS", uid: "actions" },
-  ];
+  
 
   const renderCell = (user, columnKey) => {
     const cellValue = user[columnKey];
@@ -91,10 +123,42 @@ const UsersContent = () => {
             <Col css={{ d: "flex" }}></Col>
             <Col css={{ d: "flex" }}>
               <Tooltip content="Edit user">
-                <IconButton onClick={() => console.log(user._id)}>
+                <IconButton onClick={() => getUser(user._id) }>
                   <EditIcon size={20} fill="#979797" />
                 </IconButton>
               </Tooltip>
+              <Modal
+                open={updateModal}
+                onClose={handleUpdateModalClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={updateModal}>
+                  <Box sx={style}>
+                    <Typography
+                      id="transition-modal-title"
+                      variant="h4"
+                      component="h2"
+                      sx={{ marginBottom: "20px" }}
+                    >
+                      Update user
+                    </Typography>
+                    <ModalUpdate
+                      id={userId}
+                      userData={selectedUser}
+                      sx={{ mt: 3, marginTop: "10px" }}
+                      openModal={updateModal}
+                      setModalOpen={setUpdateOpen}
+                      handleModalClose={handleUpdateModalClose}
+                    />
+
+                  </Box>
+                </Fade>
+              </Modal>
+
             </Col>
             <Col css={{ d: "flex" }}>
               <Tooltip
@@ -121,43 +185,43 @@ const UsersContent = () => {
         Add user
       </Button>
       <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openModal}
-          onClose={handleModalClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={openModal}>
-            <Box sx={style}>
-              <Typography
-                id="transition-modal-title"
-                variant="h4"
-                component="h2"
-                sx={{ marginBottom: "20px" }}
-              >
-                Create a new user
-              </Typography>
-              <UsersForm
-                id="transition-modal-description"
-                sx={{ mt: 3, marginTop: "10px" }}
-                openModal={openModal}
-                setModalOpen={setModalOpen}
-                handleModalClose={handleModalClose}
-              />
-            </Box>
-          </Fade>
-        </Modal>
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openModal}
+        onClose={handleModalClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openModal}>
+          <Box sx={style}>
+            <Typography
+              id="transition-modal-title"
+              variant="h4"
+              component="h2"
+              sx={{ marginBottom: "20px" }}
+            >
+              Create a new user
+            </Typography>
+            <UsersForm
+              //id="transition-modal-description"
+              sx={{ mt: 3, marginTop: "10px" }}
+              openModal={openModal}
+              setModalOpen={setModalOpen}
+              handleModalClose={handleModalClose}
+            />
+          </Box>
+        </Fade>
+      </Modal>
       <Table
         bordered
         shadow={false}
         color="secondary"
         aria-label="Users table"
         css={{
-         
+
           height: "auto",
           minWidth: "100%",
         }}

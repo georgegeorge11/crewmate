@@ -37,8 +37,6 @@ const LoginForm = () => {
       .then((response) => {
         const loggedInResponse = response.data;
         const role = loggedInResponse.user.role;
-        console.log(role);
-        console.log(loggedInResponse.user.fullName);
         onSubmitProps.resetForm();
         if (loggedInResponse) {
           dispatch(
