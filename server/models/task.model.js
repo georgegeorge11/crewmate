@@ -17,7 +17,10 @@ const TaskSchema = new mongoose.Schema({
                         ref: "User"
                 }
         }],
-        status: String,
+        status: {
+                type: String,
+                enum: ["Not Started", "In progress", "Completed"],
+        },
         startDate: Date,
         endDate: Date
 }, { timestamps: true });

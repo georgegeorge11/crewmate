@@ -7,11 +7,12 @@ export const getTasks = async (req, res) => {
         try {
 
                 // get teamId from url
-                const { teamId } = req.params;
+                // const { teamId } = req.params;
 
                 // get tasks for current team
-                const team = await Team.find({ _id: teamId });
-                const tasks = team.tasks;
+              
+                 const tasks = await Task.find() ;
+                 
 
                 res.status(200).send(tasks);
         } catch (err) {

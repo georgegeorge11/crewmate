@@ -6,12 +6,12 @@ import axios from "axios";
 import './teams.css';
 
 const TeamsContent = () => {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const handler = () => setVisible(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [teams, setTeams] = useState([]);
-  const [admin, setAdmin] = useState({});
+  // const [admin, setAdmin] = useState({});
 
   const createNewTeam = async () => {
     axios({
@@ -41,18 +41,18 @@ const TeamsContent = () => {
   const user = useSelector((state) => state.user);
 
 
-  const getUser = async (e) => {
-    axios({
-      method: "get",
-      url: `http://localhost:3001/users/${e}`,
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => {
-        setAdmin(response.data);
+  // const getUser = async (e) => {
+  //   axios({
+  //     method: "get",
+  //     url: `http://localhost:3001/users/${e}`,
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   })
+  //     .then((response) => {
+  //       setAdmin(response.data);
 
-      })
-      .catch((err) => console.log(err));
-  }
+  //     })
+  //     .catch((err) => console.log(err));
+  // }
 
   const getTeams = async () => {
     axios({

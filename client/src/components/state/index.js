@@ -11,9 +11,7 @@ export const authSlice = createSlice({
         name: "auth",
         initialState,
         reducers: {
-                setMode: (state) => {
-                        state.mode = state.mode === "light" ? "dark" : "light";
-                },
+                
                 setLogin: (state, action) => {
                         state.user = action.payload.user;
                         state.fullName = action.payload.user;
@@ -23,10 +21,7 @@ export const authSlice = createSlice({
                         state.user = null;
                         state.token = null;
                 },
-                // setProject: (state, action) => {
-                // if (state.user) {
-                // state.user.projects = action.payload.projects;
-                // } else { console.error("Project non-existent :")},
+               
                 setProjects: (state, action) => {
                         state.projects = action.payload.projects;
                 },
@@ -40,5 +35,6 @@ export const authSlice = createSlice({
         }
 })
 
-export const { setMode, setLogin, setLogout, setProjects, setProject } = authSlice.actions;
+
+export const { setLogin, setLogout, setProjects, setProject } = authSlice.actions;
 export default authSlice.reducer;

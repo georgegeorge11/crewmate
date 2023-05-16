@@ -6,7 +6,7 @@ import { verifyToken } from '../middleware/auth.middleware.js';
 const router = express.Router();
 
 // get team tasks
-// router.get('/:teamId', verifyToken, getTasks);
+ router.get('/', verifyToken, getTasks);
 
 // // get my tasks
 // router.get('/:userId', verifyToken, getMyTasks);

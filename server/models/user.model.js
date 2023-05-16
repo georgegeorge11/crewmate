@@ -31,17 +31,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       min: 8,
       max: 50,
-      default: "password",
+      
     },
     role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
     },
-    // occupation: {
-    //   type: String,
-    //   required: true,
-    // },
   },
   { timestamps: true }
 );

@@ -2,7 +2,9 @@ import { useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 import Sidebar from "../shared/Sidebar";
 import Topbar from "../shared/Topbar";
-// import TeamsContent from "./TeamsContent";
+import TaskContent from "./TaskContent";
+
+
 
 
 const Tasks = () => {
@@ -21,7 +23,8 @@ const Tasks = () => {
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />
-        {/* <TeamsContent/> */}
+        <TaskContent/>
+
       </main>
     </div>
   );
