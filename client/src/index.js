@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+// import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
@@ -17,7 +17,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
-import authReducer from "./components/state"
+import authReducer from "./actions"
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
@@ -32,13 +32,13 @@ const store = configureStore({
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistStore(store)}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
-  </React.StrictMode>
+
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistStore(store)}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </PersistGate>
+  </Provider>
+
 );

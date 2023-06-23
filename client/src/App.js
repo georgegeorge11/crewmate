@@ -1,27 +1,46 @@
 import { Route, Routes } from "react-router-dom";
-import Login from "./components/auth/login/Login";
-import Register from "./components/auth/register/Register";
-import Dashboard from "./components/dashboard/Dashboard";
-import Home from "./components/home/Home";
-import Users from "./components/users/Users";
-import Teams from "./components/teams/Teams";
-import Tasks from "./components/tasks/Tasks";
+import PrivateRoutes from "./PrivateRoutes";
+import Layout from "./pages/Layout";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import 'semantic-ui-css/semantic.min.css';
+import Dashboard from "./pages/dashboard/Dashboard";
+import Reports from "./pages/reports/Reports";
+import Projects from "./pages/projects/Projects";
+import Teams from "./pages/teams/Teams";
+import ViewProject from "./pages/projects/ViewProject";
+import ViewTeam from "./pages/teams/ViewTeam";
+
+
+
 
 function App() {
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/teams" element={<Teams />} />
-        <Route path="/tasks" element={<Tasks />} />
-        
-      </Routes>
-    </div>
+
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route element={<PrivateRoutes />} >
+
+        <Route element={<Layout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/teams" element={<Teams />} />
+          <Route path="/viewProject/:id" element={<ViewProject />} />
+          <Route path="/viewTeam/:id" element={<ViewTeam />} />
+          {/* 
+          <Route path="/tasks" element={<Tasks />} />
+          
+          <Route path="/account" element={<User />} />
+           */}
+        </Route>
+      </Route>
+
+
+    </Routes>
+
   );
 }
 
