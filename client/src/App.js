@@ -10,6 +10,9 @@ import Projects from "./pages/projects/Projects";
 import Teams from "./pages/teams/Teams";
 import ViewProject from "./pages/projects/ViewProject";
 import ViewTeam from "./pages/teams/ViewTeam";
+import CalendarProject from "./pages/calendar/Calendar";
+
+
 
 
 
@@ -30,11 +33,8 @@ function App() {
           <Route path="/teams" element={<Teams />} />
           <Route path="/viewProject/:id" element={<ViewProject />} />
           <Route path="/viewTeam/:id" element={<ViewTeam />} />
-          {/* 
-          <Route path="/tasks" element={<Tasks />} />
-          
-          <Route path="/account" element={<User />} />
-           */}
+          <Route path="/calendar" element={<CalendarProject />} />
+
         </Route>
       </Route>
 

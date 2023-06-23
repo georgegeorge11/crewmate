@@ -69,6 +69,12 @@ const SidebarMenu = () => {
                     Teams
                 </Menu.Item>
             </Link>
+            <Link to='/calendar'>
+                <Menu.Item name='calendar'>
+                    <Icon name='calendar' />
+                    Calendar
+                </Menu.Item>
+            </Link>
             <Link to='/reports'>
                 <Menu.Item name='reports'>
                     <Icon name='chart pie' />

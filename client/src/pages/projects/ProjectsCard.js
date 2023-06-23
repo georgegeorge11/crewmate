@@ -5,14 +5,33 @@ import { Card, Icon, Label } from 'semantic-ui-react';
 import { setProject } from '../../actions';
 import axios from 'axios';
 import AddUsers from '../../components/modals/AddUsers';
+import RemoveUser from '../../components/modals/RemoveUser';
 
 const ProjectsCard = ({ projects }) => {
     const token = useSelector((state) => state.token);
     const user = useSelector((state) => state.user);
     const [users, setUsers] = useState([]);
     const [addModal, setAddModal] = useState(false);
+    const [removeModal, setRemoveModal] = useState(false);
+    const [userSelected, setUserSelected] = useState(null);
+    const [projectSelected, setProjectSelected] = useState(null);
+    const [projectUser, setProjectUser] = useState(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+
+    const handleRemoveOpen = (id, member) => {
+        setUserSelected(id);
+        setProjectSelected(member);
+        setRemoveModal(true);
+    }
+    const handleRemoveClose = () => {
+        setUserSelected(null);
+        setRemoveModal(false);
+        setProjectSelected(null);
+
+    }
+
     const navigateToProject = (projectId) => {
         navigate(`/viewProject/${projectId}`);
         dispatch(setProject({ projectId: projectId }));
@@ -34,15 +53,13 @@ const ProjectsCard = ({ projects }) => {
         // eslint-disable-next-line
     }, []);
 
-
-
-
-
-    const handleAddUser = () => {
+    const handleAddUser = (id) => {
+        setProjectUser(id);
         setAddModal(true);
     }
     const handleAddUserClose = () => {
         setAddModal(false);
+        setProjectUser(null);
     }
 
     if (!projects) {
@@ -71,19 +88,30 @@ const ProjectsCard = ({ projects }) => {
                                 employee && (
                                     <Label key={employee._id} size="large" style={{ margin: '5px' }}>
                                         {employee.fullName}
-                                        {user.role === 'manager' && <Icon name="delete" />}
+                                        {user.role === 'manager' && <span style={{ cursor: 'pointer' }}
+                                            onClick={() => handleRemoveOpen(employee, project)}>
+                                            <Icon name="delete" />
+                                        </span>}
                                     </Label>
                                 )
                             );
                         })}
-                        <Label size="large" style={{ marginRight: '10px', marginLeft: '10px' }} onClick={handleAddUser} >
+                        <Label size="large" style={{ marginRight: '10px', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleAddUser(project._id)} >
                             {user.role === 'manager' && <Icon name="add user" />}
                         </Label>
                         <AddUsers
                             users={users}
                             open={addModal}
                             handleAddUserClose={handleAddUserClose}
+                            getUsers={getUsers}
+                            projectId={projectUser}
                         />
+                        <RemoveUser
+                            open={removeModal}
+                            handleRemoveClose={handleRemoveClose}
+                            getUsers={getUsers}
+                            userSelected={userSelected}
+                            projectSelected={projectSelected} />
 
                     </Card.Header>
                     <Card.Header as="h2">Date Range : {formatDate(project.startDate)} - {formatDate(project.endDate)}</Card.Header>
@@ -106,4 +134,4 @@ const ProjectsCard = ({ projects }) => {
 
 }
 
-export default ProjectsCard
+export default ProjectsCard;
