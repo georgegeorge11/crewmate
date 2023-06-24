@@ -7,7 +7,7 @@ import axios from 'axios';
 import AddUsers from '../../components/modals/AddUsers';
 import RemoveUser from '../../components/modals/RemoveUser';
 
-const ProjectsCard = ({ projects }) => {
+const ProjectsCard = ({ projects, getProjects }) => {
     const token = useSelector((state) => state.token);
     const user = useSelector((state) => state.user);
     const [users, setUsers] = useState([]);
@@ -103,13 +103,13 @@ const ProjectsCard = ({ projects }) => {
                             users={users}
                             open={addModal}
                             handleAddUserClose={handleAddUserClose}
-                            getUsers={getUsers}
+                            getProjects={getProjects}
                             projectId={projectUser}
                         />
                         <RemoveUser
                             open={removeModal}
                             handleRemoveClose={handleRemoveClose}
-                            getUsers={getUsers}
+                            getProjects={getProjects}
                             userSelected={userSelected}
                             projectSelected={projectSelected} />
 

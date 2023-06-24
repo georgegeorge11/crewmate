@@ -91,7 +91,7 @@ const ViewTeam = () => {
                 <Grid.Column width={5}>
                     {renderTeam()}
                 </Grid.Column>
-                {user.role === "manager" ?
+                {user.role === "manager" &&
                     <div
                         style={{
                             display: 'flex',
@@ -108,7 +108,7 @@ const ViewTeam = () => {
                             Add Project
                         </Button>
                     </div>
-                    : null}
+                }
                 <AddProject
                     open={addProject}
                     handleClose={handleAddClose}
@@ -120,7 +120,8 @@ const ViewTeam = () => {
                 <Grid.Column>
                     <Header as='h1'>Projects</Header>
                     <ProjectsCard
-                        projects={projects} />
+                        projects={projects}
+                        getProjects={getProjects} />
                     <ToastContainer />
                 </Grid.Column>
             </Grid.Row>

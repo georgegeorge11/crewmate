@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Button, Icon, Modal } from 'semantic-ui-react';
 
-const RemoveUser = ({ open, handleRemoveClose, getUsers, userSelected, projectSelected }) => {
+const RemoveUser = ({ open, handleRemoveClose, getProjects, userSelected, projectSelected }) => {
     const token = useSelector((state) => state.token);
 
     const removeUserFromTeam = async () => {
@@ -18,7 +18,7 @@ const RemoveUser = ({ open, handleRemoveClose, getUsers, userSelected, projectSe
                     position: toast.POSITION.TOP_RIGHT,
                 });
                 handleRemoveClose();
-                getUsers();
+                getProjects();
             })
                 .catch((err) => console.log(err));
         }

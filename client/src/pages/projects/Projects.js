@@ -68,11 +68,7 @@ const Projects = () => {
             <Grid.Row style={{ marginLeft: '1em', marginTop: '3em' }}>
                 <Header as="h1">Projects</Header>
             </Grid.Row>
-
-
             {renderProjects()}
-
-
         </Grid>
     );
 };

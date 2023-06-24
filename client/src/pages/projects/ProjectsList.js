@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, Header, List } from 'semantic-ui-react';
 import { cardStyle } from '../../components/cardStyle';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { setProject } from '../../actions';
 
 
 
@@ -11,8 +12,12 @@ const ProjectList = () => {
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const [projects, setProjects] = useState([]);
-
-
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const navigateToProject = (projectId) => {
+        navigate(`/viewProject/${projectId}`);
+        dispatch(setProject({ projectId: projectId }));
+    };
     const getTasks = async () => {
 
         axios({
@@ -36,7 +41,9 @@ const ProjectList = () => {
                 <List.Item key={project._id}>
                     <List.Icon name='folder open' size='large' verticalAlign='middle' />
                     <List.Content>
-                        <Link to={`/viewProject/${project._id}`}><List.Header>{project.name}</List.Header></Link>
+                        <span onClick={() => navigateToProject(project._id)} style={{ cursor: 'pointer' }}>
+                       {project.name}
+                    </span>
                         {/* <List.Description as='a'>{team.description}</List.Description> */}
                     </List.Content>
                 </List.Item>
