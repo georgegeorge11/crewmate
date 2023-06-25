@@ -36,7 +36,7 @@ const PieChartPriority = () => {
         }, {});
 
         const chartData = Object.keys(stats).map((priority) => ({
-            name: priority,
+            name: priority.charAt(0).toUpperCase() + priority.slice(1),
             value: stats[priority],
         }));
 

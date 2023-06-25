@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Button, Card, Grid, Header, Icon, Segment } from 'semantic-ui-react';
+import { Button, Card, Grid, Header, Icon } from 'semantic-ui-react';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ToastContainer } from 'react-toastify';
@@ -92,9 +92,11 @@ const ViewProject = () => {
             <Grid.Row stretched>
                 <Grid.Column>
                     {/* <Segment> */}
-                        <Header as='h1' textAlign='center'>Board</Header>
-                        <ProjectTasks tasks={tasks} />
-                        <ToastContainer />
+                    <Header as='h1' textAlign='center'>Board</Header>
+                    <ProjectTasks tasks={tasks}
+                        getTasks={getProjectTasks}
+                    />
+                    <ToastContainer />
                     {/* </Segment> */}
                 </Grid.Column>
             </Grid.Row>

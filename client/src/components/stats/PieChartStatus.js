@@ -37,7 +37,7 @@ const PieChartStatus = () => {
         }, {});
 
         const chartData = Object.keys(stats).map((status) => ({
-            name: status,
+            name: status.charAt(0).toUpperCase() + status.slice(1),
             value: stats[status],
         }));
 

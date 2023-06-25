@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Container, Grid, Header, Icon } from 'semantic-ui-react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
-const ProjectTasks = ({ tasks }) => {
+const ProjectTasks = ({ tasks, getTasks }) => {
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const [users, setUsers] = useState([]);
@@ -35,13 +35,28 @@ const ProjectTasks = ({ tasks }) => {
         return formattedDate;
     };
 
-    const handleDragEnd = (result) => {
-        // Handle the task reordering logic here
-        // This function will be called when a task is dropped in a new position
-    };
+    const changeStatus = async (taskId, newStatus) => {
+        try {
+            await axios.put(
+                `http://localhost:5000/tasks/task/${taskId}/status`,
+                { status: newStatus },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
 
-    if (!tasks) {
-        return <div>{ }</div>;
+        } catch (error) {
+            console.log(error);
+        }
+        getTasks();
+    }
+
+    const handleDragEnd = (result) => {
+        const { draggableId, destination } = result;
+
+        // Verificați dacă există o destinație validă și dacă aceasta s-a schimbat
+        if (destination && destination.droppableId !== result.source.droppableId) {
+            const newStatus = destination.droppableId;
+            changeStatus(draggableId, newStatus);
+        }
     }
 
     const kanbanColumns = {
@@ -57,13 +72,12 @@ const ProjectTasks = ({ tasks }) => {
     });
 
     return (
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <DragDropContext onDragUpdate={handleDragEnd}>
             <Grid stackable columns={3} doubling>
                 {Object.values(kanbanColumns).map((column) => {
                     const columnTasks = kanbanTasks[column.status];
-
                     return (
-                        <Grid.Column key={column.status} >
+                        <Grid.Column key={column.status}>
                             <Container style={{ marginBottom: '1em' }}>
                                 <Header as="h2">{column.title}</Header>
                             </Container>
@@ -75,7 +89,7 @@ const ProjectTasks = ({ tasks }) => {
                                         style={{
                                             minHeight: '20em',
                                             backgroundColor: '#f7f7f7',
-                                            borderRadius: '0.3em',
+                                            borderRadius: '1em',
                                             padding: '1em',
                                         }}
                                     >
@@ -89,7 +103,7 @@ const ProjectTasks = ({ tasks }) => {
                                                         style={{
                                                             userSelect: 'none',
                                                             backgroundColor: '#ffffff',
-                                                            borderRadius: '0.3em',
+                                                            borderRadius: '0.5em',
                                                             boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                                                             padding: '1em',
                                                             marginBottom: '1em',
@@ -134,7 +148,6 @@ const ProjectTasks = ({ tasks }) => {
                                                 )}
                                             </Draggable>
                                         ))}
-
                                         {provided.placeholder}
                                     </div>
                                 )}
