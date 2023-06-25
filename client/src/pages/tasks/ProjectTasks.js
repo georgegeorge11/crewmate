@@ -1,31 +1,30 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Card, Container, Grid, Header, Icon, Tab } from 'semantic-ui-react';
+import { Container, Grid, Header, Icon } from 'semantic-ui-react';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 const ProjectTasks = ({ tasks }) => {
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const [users, setUsers] = useState([]);
+
     const getUsers = async () => {
-        axios({
-            method: 'GET',
-            url: `http://localhost:5000/users`,
-            headers: { Authorization: `Bearer ${token}` },
-        }).then((response) => {
+        try {
+            const response = await axios.get('http://localhost:5000/users', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             setUsers(response.data);
-        })
-            .catch((err) => console.log(err));
-    }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         getUsers();
         // eslint-disable-next-line
     }, []);
 
-    if (!tasks) {
-        return <div>{ }</div>
-    }
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const formattedDate = date.toLocaleDateString('en-GB', {
@@ -35,55 +34,117 @@ const ProjectTasks = ({ tasks }) => {
         });
         return formattedDate;
     };
-    const panes = tasks.map(task => {
 
-        return {
-            menuItem: task.title, render: () => {
-                return <Tab.Pane>
-                    <Container>
-                        <Grid>
-                            <Grid.Row style={{ marginTop: '1em' }}>
-                                <Grid.Column>
-                                    <Header as='h1'>
-                                        <Icon name='tasks' />
-                                        <Header.Content>{task.title}</Header.Content>
+    const handleDragEnd = (result) => {
+        // Handle the task reordering logic here
+        // This function will be called when a task is dropped in a new position
+    };
 
-                                    </Header>
-                                    <Header as='h3' color='grey'>
-                                        {task.description}
-                                    </Header>
-                                    <Header as='h4' color='grey'>
-                                        Status: {task.status}
-                                    </Header>
-                                    <Header as='h4' color='grey'>
-                                        Priority: {task.priority}
-                                    </Header>
-                                    <Header as='h4' color='grey'>
-                                        Assignee: {users.map((user) => user._id === task.assignee ? user.fullName : null)}
-                                    </Header>
-                                    <Header as='h4' color='grey'>
-                                        Due Date : {formatDate(task.dueDate)}
-                                    </Header>
-                                    <Card.Content extra style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+    if (!tasks) {
+        return <div>{ }</div>;
+    }
 
-                                        {task.assignee === user._id && <div>
-                                            <span
-                                                style={{ cursor: 'pointer' }}
-                                            >
-                                                <Icon name="edit" color="blue" size="big" />
-                                            </span>
-                                        </div>}
-                                    </Card.Content>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    </Container>
-                </Tab.Pane>
-            }
-        }
-    })
-    return <Tab menu={{ fluid: true, vertical: true, tabular: 'right' }} panes={panes} />
+    const kanbanColumns = {
+        todo: { title: 'To Do', status: 'todo' },
+        inProgress: { title: 'In Progress', status: 'inProgress' },
+        completed: { title: 'Completed', status: 'completed' },
+    };
 
-}
+    const kanbanTasks = {};
+
+    Object.values(kanbanColumns).forEach((column) => {
+        kanbanTasks[column.status] = tasks.filter((task) => task.status === column.status);
+    });
+
+    return (
+        <DragDropContext onDragEnd={handleDragEnd}>
+            <Grid stackable columns={3} doubling>
+                {Object.values(kanbanColumns).map((column) => {
+                    const columnTasks = kanbanTasks[column.status];
+
+                    return (
+                        <Grid.Column key={column.status} >
+                            <Container style={{ marginBottom: '1em' }}>
+                                <Header as="h2">{column.title}</Header>
+                            </Container>
+                            <Droppable droppableId={column.status}>
+                                {(provided) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.droppableProps}
+                                        style={{
+                                            minHeight: '20em',
+                                            backgroundColor: '#f7f7f7',
+                                            borderRadius: '0.3em',
+                                            padding: '1em',
+                                        }}
+                                    >
+                                        {columnTasks.map((task, index) => (
+                                            <Draggable key={task._id} draggableId={task._id} index={index}>
+                                                {(provided) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        style={{
+                                                            userSelect: 'none',
+                                                            backgroundColor: '#ffffff',
+                                                            borderRadius: '0.3em',
+                                                            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+                                                            padding: '1em',
+                                                            marginBottom: '1em',
+                                                            display: 'grid',
+                                                            gridTemplateColumns: '1fr',
+                                                            gridGap: '0.5em',
+                                                        }}
+                                                    >
+                                                        <div>
+                                                            <Header as="h3">
+                                                                <Icon name="tasks" />
+                                                                <Header.Content>{task.title}</Header.Content>
+                                                            </Header>
+                                                            <p>{task.description}</p>
+                                                            <p>
+                                                                <strong>Status:</strong> {task.status}
+                                                            </p>
+                                                            <p>
+                                                                <strong>Priority:</strong> {task.priority}
+                                                            </p>
+                                                            <p>
+                                                                <strong>Assignee:</strong>{' '}
+                                                                {users.map((user) =>
+                                                                    user._id === task.assignee ? user.fullName : null
+                                                                )}
+                                                            </p>
+                                                            <p>
+                                                                <strong>Due Date:</strong> {formatDate(task.dueDate)}
+                                                            </p>
+                                                        </div>
+                                                        {task.assignee === user._id && (
+                                                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                                <Icon
+                                                                    name="edit"
+                                                                    color="blue"
+                                                                    size="large"
+                                                                    style={{ cursor: 'pointer' }}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </Grid.Column>
+                    );
+                })}
+            </Grid>
+        </DragDropContext>
+    );
+};
 
 export default ProjectTasks;
