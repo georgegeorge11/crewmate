@@ -11,6 +11,7 @@ import Teams from "./pages/teams/Teams";
 import ViewProject from "./pages/projects/ViewProject";
 import ViewTeam from "./pages/teams/ViewTeam";
 import CalendarProject from "./pages/calendar/Calendar";
+import Admin from "./pages/admin/Admin";
 
 
 
@@ -25,7 +26,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route element={<PrivateRoutes />} >
-
+        <Route path="/admin" element={<Admin />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reports" element={<Reports />} />
