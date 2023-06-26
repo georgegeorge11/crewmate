@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button, Dropdown, Modal } from 'semantic-ui-react';
+import { addUsersToProject } from '../../actions/functions';
 
 const AddUsers = ({ users, open, handleAddUserClose, projectId, getProjects }) => {
     const token = useSelector((state) => state.token);
@@ -16,23 +16,10 @@ const AddUsers = ({ users, open, handleAddUserClose, projectId, getProjects }) =
         setSelectedUsers(data.value);
     };
 
-    const addUsersToProject = async () => {
-        try {
-            const response = await axios.post(
-                `http://localhost:5000/projects/project/${projectId}/members`,
-                { memberIds: selectedUsers },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            console.log(response.data);
-            // Handle the response as needed
-            getProjects();
-        } catch (error) {
-            console.log(error); // Handle the error as needed
-        }
-    };
+
 
     const handleModalConfirm = async () => {
-        await addUsersToProject();
+        await addUsersToProject(projectId, selectedUsers, token, getProjects);
         handleAddUserClose();
     };
 

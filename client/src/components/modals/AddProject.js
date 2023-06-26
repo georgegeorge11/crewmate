@@ -1,8 +1,7 @@
-import axios from 'axios';
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { Button, Form, Input, Modal } from 'semantic-ui-react';
+import { createProject } from '../../actions/functions';
 
 const AddProject = ({ open, handleClose, getProjects }) => {
     const user = useSelector((state) => state.user);
@@ -12,38 +11,9 @@ const AddProject = ({ open, handleClose, getProjects }) => {
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState(Date.now());
     const [endDate, setEndDate] = useState(Date.now());
-    const createProject = async (name, description,startDate,endDate) => {
-        axios
-            .post(
-                'http://localhost:5000/projects/createProject',
-                {
-                    name: name,
-                    description: description,
-                    teamId: teamId,
-                    leaderId: user._id,
-                    startDate: startDate,
-                    endDate: endDate
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-            )
-            .then((response) => {
-                console.log(response.data);
-                toast.success('Project created successfully!', {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-                setName('');
-                setDescription('');
-                setStartDate('');
-                setEndDate('');
-                handleClose();
-                getProjects();
-            })
-            .catch((err) => console.log(err));
-    }
-
     const handleAddProject = async (e) => {
         e.preventDefault();
-        await createProject(name, description,startDate,endDate);
+        await createProject(name, description, startDate, endDate, teamId, user, token, getProjects, handleClose);
     }
 
 

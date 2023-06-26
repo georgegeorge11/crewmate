@@ -1,14 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Container, Grid, Header, Icon } from 'semantic-ui-react';
+import { Container, Dropdown, Grid, Header, Icon, Label, Popup } from 'semantic-ui-react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { changeStatus, updatePriority } from '../../actions/functions';
 
 const ProjectTasks = ({ tasks, getTasks }) => {
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const [users, setUsers] = useState([]);
-
+    const [selectedPriority, setSelectedPriority] = useState('');
     const getUsers = async () => {
         try {
             const response = await axios.get('http://localhost:5000/users', {
@@ -34,30 +35,15 @@ const ProjectTasks = ({ tasks, getTasks }) => {
         });
         return formattedDate;
     };
-
-    const changeStatus = async (taskId, newStatus) => {
-        try {
-            await axios.put(
-                `http://localhost:5000/tasks/task/${taskId}/status`,
-                { status: newStatus },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-        } catch (error) {
-            console.log(error);
-        }
-        getTasks();
-    }
-
-    const handleDragEnd = (result) => {
+    const handleDragUpdate = (result) => {
         const { draggableId, destination } = result;
 
         // Verificați dacă există o destinație validă și dacă aceasta s-a schimbat
         if (destination && destination.droppableId !== result.source.droppableId) {
             const newStatus = destination.droppableId;
-            changeStatus(draggableId, newStatus);
+            changeStatus(draggableId, newStatus, token, getTasks);
         }
-    }
+    };
 
     const kanbanColumns = {
         todo: { title: 'To Do', status: 'todo' },
@@ -72,7 +58,7 @@ const ProjectTasks = ({ tasks, getTasks }) => {
     });
 
     return (
-        <DragDropContext onDragUpdate={handleDragEnd}>
+        <DragDropContext onDragUpdate={handleDragUpdate}>
             <Grid stackable columns={3} doubling>
                 {Object.values(kanbanColumns).map((column) => {
                     const columnTasks = kanbanTasks[column.status];
@@ -113,27 +99,63 @@ const ProjectTasks = ({ tasks, getTasks }) => {
                                                         }}
                                                     >
                                                         <div>
-                                                            <Header as="h3">
-                                                                <Icon name="tasks" />
-                                                                <Header.Content>{task.title}</Header.Content>
-                                                            </Header>
-                                                            <p>{task.description}</p>
-                                                            <p>
-                                                                <strong>Status:</strong> {task.status}
-                                                            </p>
-                                                            <p>
-                                                                <strong>Priority:</strong> {task.priority}
-                                                            </p>
-                                                            <p>
-                                                                <strong>Assignee:</strong>{' '}
-                                                                {users.map((user) =>
-                                                                    user._id === task.assignee ? user.fullName : null
-                                                                )}
-                                                            </p>
-                                                            <p>
-                                                                <strong>Due Date:</strong> {formatDate(task.dueDate)}
-                                                            </p>
+                                                            <Popup
+                                                                trigger={
+                                                                    <div>
+                                                                        <Label
+                                                                            ribbon="right"
+                                                                            color={
+                                                                                task.priority === 'low'
+                                                                                    ? 'green'
+                                                                                    : task.priority === 'medium'
+                                                                                        ? 'yellow'
+                                                                                        : 'red'
+                                                                            }
+                                                                            style={{ cursor: 'pointer' }}
+                                                                            onClick={() => setSelectedPriority(task.priority)}
+                                                                        >
+                                                                            {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}{' '}
+                                                                            Priority
+                                                                        </Label>
+                                                                    </div>
+                                                                }
+                                                                on="click"
+                                                                position='bottom right'
+                                                                style={{ height: 'min-content' }}
+                                                            >
+                                                                <Dropdown
+                                                                    placeholder="Select priority"
+                                                                    selection
+                                                                    options={[
+                                                                        { key: 'low', text: 'Low', value: 'low' },
+                                                                        { key: 'medium', text: 'Medium', value: 'medium' },
+                                                                        { key: 'high', text: 'High', value: 'high' },
+                                                                    ]}
+                                                                    value={selectedPriority}
+                                                                    onChange={(e, { value }) => {
+                                                                        setSelectedPriority(value);
+                                                                        updatePriority(task._id, value, token, getTasks);
+                                                                    }}
+                                                                />
+                                                            </Popup>
                                                         </div>
+                                                        <Header as="h3">
+                                                            <Header.Content>
+                                                                <Icon name="tasks" />
+                                                                {task.title}
+                                                            </Header.Content>
+                                                        </Header>
+
+                                                        <p>{task.description}</p>
+                                                        <p>
+                                                            <strong>Assignee:</strong>{' '}
+                                                            {users.map((user) =>
+                                                                user._id === task.assignee ? user.fullName : null
+                                                            )}
+                                                        </p>
+                                                        <p>
+                                                            <strong>Due Date:</strong> {formatDate(task.dueDate)}
+                                                        </p>
                                                         {task.assignee === user._id && (
                                                             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                                                                 <Icon

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { Button, Dropdown, Form, Input, Modal } from 'semantic-ui-react';
+import { createTask } from '../../actions/functions';
 
 const AddTask = ({ projectId, open, close, getTasks }) => {
 
@@ -45,33 +45,11 @@ const AddTask = ({ projectId, open, close, getTasks }) => {
         getUsers();
         // eslint-disable-next-line
     }, []);
-    const createTask = async () => {
-        axios
-            .post('http://localhost:5000/tasks/createTask', {
-                title: title,
-                description: description,
-                projectId: projectId,
-                assigneeId: selectedUsers,
-                status: status,
-                priority: priority,
-                dueDate: dueDate
-            },
-                { headers: { Authorization: `Bearer ${token}` } }).then((response) => {
-                    toast.success('Task created successfully!', {
-                        position: toast.POSITION.TOP_RIGHT,
-                    });
-                    setTitle('');
-                    setDescription('');
-                    setStatus('');
-                    setPriority('');
-                    getTasks();
-                    close();
-                }).catch((err) => console.log(err));
-    }
+
 
     const handleAddTask = async (e) => {
         e.preventDefault();
-        await createTask();
+        await createTask(title, description, projectId, selectedUsers, status, priority, dueDate, token, getTasks, close);
 
     }
     return (

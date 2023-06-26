@@ -1,41 +1,18 @@
-import axios from 'axios'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
 import { Button, Form, Input, Modal } from 'semantic-ui-react'
+import { createTeam } from '../../actions/functions'
 
 const AddTeam = ({ open, handleClose, getTeams }) => {
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('')
-    const createTeam = async (name, description) => {
-        axios
-            .post(
-                'http://localhost:5000/teams/createTeam',
-                {
-                    name: name,
-                    description: description,
-                    leaderId: user._id,
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-            )
-            .then((response) => {
-                console.log(response.data);
-                toast.success('Team created successfully!', {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-                setName('');
-                setDescription('');
-                handleClose();
-                getTeams();
-            })
-            .catch((err) => console.log(err));
-    }
+
 
     const handleAddTeam = async (e) => {
         e.preventDefault();
-        await createTeam(name, description);
+        await createTeam(name, description, user, token, getTeams, handleClose);
     }
 
 
