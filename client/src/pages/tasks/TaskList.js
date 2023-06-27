@@ -3,9 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Card, Header, List } from 'semantic-ui-react';
 import { cardStyle } from '../../components/cardStyle';
-import { Link } from 'react-router-dom';
-
-
 
 const TasksList = () => {
     const user = useSelector((state) => state.user);
@@ -36,8 +33,8 @@ const TasksList = () => {
                 <List.Item key={task._id}>
                     <List.Icon name='tasks' size='large' verticalAlign='middle' />
                     <List.Content>
-                        <Link to={`/task/${task._id}`}><List.Header>{task.title}</List.Header></Link>
-                        <List.Description as='a'>{task.description}</List.Description>
+                        <List.Header>{task.title}</List.Header>
+                        <List.Description >{task.description}</List.Description>
                     </List.Content>
                 </List.Item>
 

@@ -56,6 +56,47 @@ export const createProject = async (name, description, startDate, endDate, teamI
         .catch((err) => console.log(err));
 }
 
+//update project
+export const updateProject = async (name, description, startDate, endDate, user, teamSelected, projectSelected, token, close, getProjects) => {
+    if (projectSelected) {
+        axios.put(`http://localhost:5000/projects/project/${projectSelected._id}`, {
+            name: name,
+            description: description,
+            teamId: teamSelected._id,
+            leaderId: user._id,
+            startDate: startDate,
+            endDate: endDate
+
+        }, { headers: { Authorization: `Bearer ${token}` } }).then((response) => {
+            toast.success('Project updated successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            close();
+            getProjects();
+        })
+            .catch((err) => console.log(err));
+    }
+}
+
+//delete project
+export const deleteProject = async (token, projectSelected, close, getProjects) => {
+    if (projectSelected) {
+        axios({
+            method: 'DELETE',
+            url: `http://localhost:5000/projects/project/${projectSelected._id}`,
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((response) => {
+            toast.success('Project deleted successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            close();
+            getProjects();
+        })
+            .catch((err) => console.log(err));
+    }
+
+}
+
 //create new task
 export const createTask = async (title, description, projectId, selectedUsers, status, priority, dueDate, token, getTasks, close) => {
     axios
@@ -99,6 +140,24 @@ export const createTeam = async (name, description, user, token, getTeams, handl
             getTeams();
         })
         .catch((err) => console.log(err));
+}
+
+//update team
+export const updateTeam = async (name, description, token, teamSelected, getTeams, user, close) => {
+    if (teamSelected) {
+        axios.put(`http://localhost:5000/teams/team/${teamSelected._id}`, {
+            name: name,
+            description: description,
+            leaderId: user._id
+        }, { headers: { Authorization: `Bearer ${token}` } }).then((response) => {
+            toast.success('Team updated successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            close();
+            getTeams();
+        })
+            .catch((err) => console.log(err));
+    }
 }
 
 //delete team

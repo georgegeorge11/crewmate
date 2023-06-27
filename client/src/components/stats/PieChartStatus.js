@@ -60,8 +60,8 @@ const PieChartStatus = () => {
                     labelLine={false}
                     label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
                         const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                        const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                        const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                        const x = Math.floor(cx + radius * Math.cos(-midAngle * (Math.PI / 180)));
+                        const y = Math.floor(cy + radius * Math.sin(-midAngle * (Math.PI / 180)));
                         return (
                             <text
                                 x={x}

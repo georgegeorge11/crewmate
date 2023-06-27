@@ -52,7 +52,7 @@ const Teams = () => {
 
                 </div>
             </Grid.Row>
-            {user.role === "manager" ?
+            {user.role === "manager" &&
                 <div style={{
                     height: '150px', margin: '15px 0', display: 'flex', justifyContent: 'center'
                 }}>
@@ -65,7 +65,7 @@ const Teams = () => {
                         Create Team
                     </Button>
                 </div>
-                : null}
+            }
             <AddTeam
                 open={addModal}
                 handleClose={handleClose}

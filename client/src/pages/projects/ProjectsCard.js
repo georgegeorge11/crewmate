@@ -4,10 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Icon, Label } from 'semantic-ui-react';
 import { setProject } from '../../actions';
 import axios from 'axios';
-import AddUsers from '../../components/modals/AddUsers';
-import RemoveUser from '../../components/modals/RemoveUser';
 
-const ProjectsCard = ({ projects, getProjects }) => {
+import RemoveUser from '../../components/modals/RemoveUser';
+import AddUsersToProject from '../../components/modals/AddUsersToProject';
+import DeleteProject from '../../components/modals/DeleteProject';
+import EditProject from '../../components/modals/EditProject';
+
+const ProjectsCard = ({ projects, getProjects, teamSelected }) => {
     const token = useSelector((state) => state.token);
     const user = useSelector((state) => state.user);
     const [users, setUsers] = useState([]);
@@ -16,6 +19,8 @@ const ProjectsCard = ({ projects, getProjects }) => {
     const [userSelected, setUserSelected] = useState(null);
     const [projectSelected, setProjectSelected] = useState(null);
     const [projectUser, setProjectUser] = useState(null);
+    const [deleteProject, setDeleteProject] = useState(false);
+    const [editModal, setEditModal] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -62,6 +67,23 @@ const ProjectsCard = ({ projects, getProjects }) => {
         setProjectUser(null);
     }
 
+    const handleDeleteProject = (project) => {
+        setProjectSelected(project);
+        setDeleteProject(true);
+    }
+    const handleDeleteProjectClose = () => {
+        setProjectSelected(null);
+        setDeleteProject(false);
+    }
+    const handleEditOpen = (id) => {
+        setProjectSelected(id);
+        setEditModal(true);
+    }
+    const handleEditClose = () => {
+        setProjectSelected(null);
+        setEditModal(false);
+    }
+
     if (!projects) {
         return <div>{ }</div>
     }
@@ -75,6 +97,7 @@ const ProjectsCard = ({ projects, getProjects }) => {
         return formattedDate;
     };
     return (<div style={{ display: 'flex', flexWrap: 'wrap' }}>
+
         {projects.map((project) => (
             <Card key={project._id} style={{ margin: '15px', width: '400px' }}>
                 <Card.Content>
@@ -99,7 +122,7 @@ const ProjectsCard = ({ projects, getProjects }) => {
                         <Label size="large" style={{ marginRight: '10px', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleAddUser(project._id)} >
                             {user.role === 'manager' && <Icon name="add user" />}
                         </Label>
-                        <AddUsers
+                        <AddUsersToProject
                             users={users}
                             open={addModal}
                             handleAddUserClose={handleAddUserClose}
@@ -121,13 +144,29 @@ const ProjectsCard = ({ projects, getProjects }) => {
                     <span onClick={() => navigateToProject(project._id)} style={{ cursor: 'pointer' }}>
                         <Icon name="eye" color="black" size="big" />
                     </span>
-                    <span style={{ cursor: 'pointer' }}>
+                    <span style={{ cursor: 'pointer' }}
+                        onClick={() => handleEditOpen(project)}
+                    >
                         <Icon name="edit" color="blue" size="big" />
                     </span>
-                    <span style={{ cursor: 'pointer' }}>
+                    <span style={{ cursor: 'pointer' }}
+                        onClick={() => handleDeleteProject(project)}>
                         <Icon name="trash" color="red" size="big" />
                     </span>
                 </Card.Content>
+                <EditProject
+                    open={editModal}
+                    close={handleEditClose}
+                    getProjects={getProjects}
+                    projectSelected={projectSelected}
+                    teamSelected={teamSelected}
+                />
+                <DeleteProject
+                    open={deleteProject}
+                    close={handleDeleteProjectClose}
+                    getProjects={getProjects}
+                    projectSelected={projectSelected}
+                />
             </Card>
         ))}
     </div>)

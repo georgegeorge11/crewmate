@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Button, Dropdown, Modal } from 'semantic-ui-react';
 import { addUsersToProject } from '../../actions/functions';
 
-const AddUsers = ({ users, open, handleAddUserClose, projectId, getProjects }) => {
+const AddUsersToProject = ({ users, open, handleAddUserClose, projectId, getProjects }) => {
     const token = useSelector((state) => state.token);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const userOptions = users.map((user) => ({
@@ -49,4 +49,4 @@ const AddUsers = ({ users, open, handleAddUserClose, projectId, getProjects }) =
     );
 };
 
-export default AddUsers;
+export default AddUsersToProject;

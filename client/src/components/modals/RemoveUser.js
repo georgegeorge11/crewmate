@@ -15,7 +15,7 @@ const RemoveUser = ({ open, handleRemoveClose, getProjects, userSelected, projec
         <Modal open={open} onClose={handleRemoveClose} style={{ height: 'auto', width: 'auto' }}>
             <Modal.Header>Remove user</Modal.Header>
             <Modal.Content>
-                <p>Are you sure you want to delete the user {userSelected && userSelected.fullName}?</p>
+                <p>Are you sure you want to remove the user <b>{userSelected && userSelected.fullName}</b> from the project?</p>
             </Modal.Content>
             <Modal.Actions>
                 <Button color="red" onClick={handleRemoveClose}>

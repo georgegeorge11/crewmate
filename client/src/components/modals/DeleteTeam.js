@@ -14,7 +14,7 @@ const DeleteTeam = ({ open, handleDeleteClose, getTeams, teamSelected }) => {
         <Modal open={open} onClose={handleDeleteClose} style={{ height: 'auto', width: 'auto' }}>
             <Modal.Header>Delete Team</Modal.Header>
             <Modal.Content>
-                <p>Are you sure you want to delete the team {teamSelected && teamSelected.name}?</p>
+                <p>Are you sure you want to delete the team <b>{teamSelected && teamSelected.name}</b>?</p>
             </Modal.Content>
             <Modal.Actions>
                 <Button color="red" onClick={handleDeleteClose}>

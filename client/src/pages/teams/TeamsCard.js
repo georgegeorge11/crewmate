@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Icon } from 'semantic-ui-react';
 import { setTeam } from '../../actions';
 import DeleteTeam from '../../components/modals/DeleteTeam'
+import EditTeam from '../../components/modals/EditTeam';
 
 const TeamsCard = ({ teams, searchTerm, getTeams }) => {
     const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [deleteModal, setDeleteModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
     const [teamSelected, setTeamSelected] = useState(null);
     const handleDeleteOpen = (id) => {
         setTeamSelected(id);
@@ -18,6 +20,14 @@ const TeamsCard = ({ teams, searchTerm, getTeams }) => {
     const handleDeleteClose = () => {
         setDeleteModal(false);
         setTeamSelected(null);
+    }
+    const handleEditOpen = (id) => {
+        setTeamSelected(id);
+        setEditModal(true);
+    }
+    const handleEditClose = () => {
+        setTeamSelected(null);
+        setEditModal(false);
     }
 
     const navigateToTeam = (teamId) => {
@@ -42,6 +52,7 @@ const TeamsCard = ({ teams, searchTerm, getTeams }) => {
                     </span>
                     {user.role === "manager" ? (<div>
                         <span style={{ cursor: 'pointer' }}
+                            onClick={() => handleEditOpen(team)}
                         >
                             <Icon name="edit" color="blue" size="big" />
                         </span>
@@ -53,6 +64,12 @@ const TeamsCard = ({ teams, searchTerm, getTeams }) => {
                         </span>
                     </div>) : null}
                 </Card.Content>
+                <EditTeam
+                    open={editModal}
+                    close={handleEditClose}
+                    getTeams={getTeams}
+                    teamSelected={teamSelected}
+                />
                 <DeleteTeam
                     open={deleteModal}
                     handleDeleteClose={handleDeleteClose}

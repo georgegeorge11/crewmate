@@ -10,9 +10,10 @@ const ViewTeam = () => {
     const token = useSelector((state) => state.token);
     const teamId = useSelector((state) => state.team);
     const user = useSelector((state) => state.user);
-    const [team, setTeam] = useState({});
+    const [team, setTeam] = useState([]);
     const [projects, setProjects] = useState([]);
     const [addProject, setAddProject] = useState(false);
+
 
     const getTeam = async () => {
         axios({
@@ -24,6 +25,11 @@ const ViewTeam = () => {
         })
             .catch((err) => console.log(err));
     }
+
+    useEffect(() => {
+        getTeam();
+        // eslint-disable-next-line
+    }, []);
 
     const getProjects = async () => {
         axios({
@@ -48,10 +54,7 @@ const ViewTeam = () => {
         // eslint-disable-next-line
     }, []);
 
-    useEffect(() => {
-        getTeam();
-        // eslint-disable-next-line
-    }, []);
+
 
 
     const renderTeam = () => {
@@ -59,19 +62,22 @@ const ViewTeam = () => {
             return <div>Loading...</div>
         }
         return (
-            <Card.Group>
-                <Card fluid>
-                    <Card.Content>
-                        <Card.Header>
-                            <Header as='h1'>
-                                {team.name}
-                            </Header></Card.Header>
-                        <Card.Description>
-                            {team.description}
-                        </Card.Description>
-                    </Card.Content>
-                </Card>
-            </Card.Group>
+
+            <Card fluid>
+                <Card.Content>
+                    <Card.Header>
+                        <Header as='h1'>
+                            {team.name}
+                        </Header></Card.Header>
+                    <Card.Description>
+                        {team.description}
+                    </Card.Description>
+                    <Card.Description>
+
+                    </Card.Description>
+                </Card.Content>
+            </Card>
+
         )
     }
 
@@ -120,6 +126,7 @@ const ViewTeam = () => {
                 <Grid.Column>
                     <Header as='h1'>Projects</Header>
                     <ProjectsCard
+                        teamSelected={team}
                         projects={projects}
                         getProjects={getProjects} />
                     <ToastContainer />

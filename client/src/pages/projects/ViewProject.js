@@ -56,6 +56,7 @@ const ViewProject = () => {
     const handleTaskClose = () => {
         setAddTask(false);
     };
+    console.log(project);
 
     const renderProject = () => {
         if (!project) {
