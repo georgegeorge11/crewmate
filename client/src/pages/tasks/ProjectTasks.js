@@ -3,14 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Container, Dropdown, Grid, Header, Icon, Label, Popup } from 'semantic-ui-react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { changeStatus, updatePriority } from '../../actions/functions';
+import { changeAssignee, changeStatus, updatePriority } from '../../actions/functions';
 import { toast } from 'react-toastify';
+import DeleteTask from '../../components/modals/DeleteTask';
+import EditTask from '../../components/modals/EditTask';
 
-const ProjectTasks = ({ tasks, getTasks }) => {
+const ProjectTasks = ({ project, tasks, getTasks }) => {
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const [users, setUsers] = useState([]);
     const [selectedPriority, setSelectedPriority] = useState('');
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [assignee, setAssignee] = useState('');
     const getUsers = async () => {
         try {
             const response = await axios.get('http://localhost:5000/users', {
@@ -26,6 +32,11 @@ const ProjectTasks = ({ tasks, getTasks }) => {
         getUsers();
         // eslint-disable-next-line
     }, []);
+    const userOptions = users.map((user) => ({
+        key: user._id,
+        text: user.fullName,
+        value: user._id,
+    }));
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -70,6 +81,26 @@ const ProjectTasks = ({ tasks, getTasks }) => {
             });
         }
     };
+    const handleChangeAssignee = (id, newAssignee) => {
+        changeAssignee(id, newAssignee, token, getTasks);
+
+    }
+    const handleDeleteOpen = (task) => {
+        setSelectedTask(task);
+        setDeleteModal(true);
+    }
+    const handleDeleteClose = () => {
+        setSelectedTask(null);
+        setDeleteModal(false);
+    }
+    const handleEditOpen = (task) => {
+        setSelectedTask(task);
+        setEditModal(true);
+    }
+    const handleEditClose = () => {
+        setSelectedTask(null);
+        setEditModal(false);
+    }
 
     const kanbanColumns = {
         todo: { title: 'To Do', status: 'todo' },
@@ -184,23 +215,46 @@ const ProjectTasks = ({ tasks, getTasks }) => {
                                                         </p>
                                                         {user.role === "manager" ?
                                                             (<div style={{ display: 'flex', justifyContent: 'flex-end', gap: '5px' }}>
-                                                                <Label
-                                                                    size="medium"
-                                                                    color='teal'
-                                                                    style={{ cursor: 'pointer' }}>
-                                                                    <b>Reassign</b>
-                                                                </Label>
+
+                                                                <Popup
+                                                                    trigger={
+                                                                        <Label
+                                                                            size="medium"
+                                                                            color='teal'
+                                                                            style={{ cursor: 'pointer' }}
+                                                                            onClick={() => setAssignee(task.assignee)}
+                                                                        >
+                                                                            <b>Reassign</b>
+                                                                        </Label>
+                                                                    }
+                                                                    on="click"
+                                                                    position='bottom right'
+                                                                    style={{ height: 'min-content' }}
+                                                                >
+                                                                    <Dropdown
+                                                                        placeholder="Select user"
+                                                                        selection
+                                                                        options={userOptions}
+                                                                        value={assignee}
+                                                                        onChange={(e, { value }) => {
+
+                                                                            handleChangeAssignee(task._id, value)
+                                                                        }}
+                                                                    />
+                                                                </Popup>
                                                                 <Icon
                                                                     name="edit"
                                                                     color="blue"
                                                                     size="large"
                                                                     style={{ cursor: 'pointer' }}
+                                                                    onClick={() => handleEditOpen(task)}
                                                                 />
                                                                 <Icon
                                                                     name="trash"
                                                                     color="red"
                                                                     size="large"
                                                                     style={{ cursor: 'pointer' }}
+                                                                    onClick={() => handleDeleteOpen(task)}
                                                                 />
                                                             </div>)
                                                             :
@@ -211,11 +265,22 @@ const ProjectTasks = ({ tasks, getTasks }) => {
                                                                         color="blue"
                                                                         size="large"
                                                                         style={{ cursor: 'pointer' }}
+                                                                        onClick={() => handleEditOpen(task)}
                                                                     />
                                                                 </div>)
                                                             )
                                                         }
-
+                                                        <DeleteTask
+                                                            open={deleteModal}
+                                                            close={handleDeleteClose}
+                                                            task={selectedTask}
+                                                            getTasks={getTasks} />
+                                                        <EditTask
+                                                            open={editModal}
+                                                            close={handleEditClose}
+                                                            task={selectedTask}
+                                                            getTasks={getTasks}
+                                                            projectId={project} />
 
                                                     </div>
                                                 )}

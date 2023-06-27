@@ -118,6 +118,61 @@ export const createTask = async (title, description, projectId, selectedUsers, s
             }).catch((err) => console.log(err));
 }
 
+//update task
+export const updateTask = async (task, name, description, projectId, user, dueDate, token, getTasks, close) => {
+    if (task) {
+        axios.put(`http://localhost:5000/tasks/task/${task._id}`, {
+            title: name,
+            description: description,
+            projectId: projectId._id,
+            assigneeId: user._id,
+            dueDate: dueDate
+        }, { headers: { Authorization: `Bearer ${token}` } }).then((response) => {
+            toast.success('Task updated successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            close();
+            getTasks();
+        })
+            .catch((err) => console.log(err));
+    }
+}
+
+//delete task
+export const deleteTask = async (task, getTasks, token, close) => {
+    if (task) {
+        axios({
+            method: 'DELETE',
+            url: `http://localhost:5000/tasks/task/${task._id}`,
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((response) => {
+            toast.success('Task deleted successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            close();
+            getTasks();
+        })
+            .catch((err) => console.log(err));
+    }
+}
+
+//change assignee
+export const changeAssignee = async (id, newAssignee, token, getTasks) => {
+    try {
+        await axios.put(
+            `http://localhost:5000/tasks/task/${id}/assign`,
+            { assignee: newAssignee },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success('Changed assignee successfully!', {
+            position: toast.POSITION.TOP_RIGHT,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    getTasks();
+}
+
 //create new team
 export const createTeam = async (name, description, user, token, getTeams, handleClose) => {
     axios

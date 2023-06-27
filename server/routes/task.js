@@ -13,7 +13,7 @@ taskRouter.post('/createTask', verifyToken, createTask);
 taskRouter.put('/task/:taskId', verifyToken, updateTask);
 taskRouter.delete('/task/:taskId', verifyToken, deleteTask);
 taskRouter.put('/task/:taskId/move/:projectId', verifyToken, moveTaskToProject);
-taskRouter.put('/task/:taskId/assign/:userId', verifyToken, assignUserToTask);
+taskRouter.put('/task/:taskId/assign', verifyToken, assignUserToTask);
 taskRouter.put('/task/:taskId/status', verifyToken, changeTaskStatus);
 taskRouter.put('/task/:taskId/priority', verifyToken, changeTaskPriority);
 taskRouter.put('/task/:taskId/due-date', verifyToken, changeTaskDueDate);

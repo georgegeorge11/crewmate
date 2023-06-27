@@ -85,7 +85,7 @@ export const createTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
     const { taskId } = req.params;
-    const { title, description, projectId, assigneeId, status, priority, dueDate } = req.body;
+    const { title, description, projectId, assigneeId, dueDate } = req.body;
     try {
         const project = await Project.findById(projectId);
         if (!project) {
@@ -107,8 +107,6 @@ export const updateTask = async (req, res) => {
                 description,
                 project,
                 assignee,
-                status,
-                priority,
                 dueDate,
             },
             { new: true }
@@ -162,21 +160,13 @@ export const moveTaskToProject = async (req, res) => {
 
 // Assign a user to a task
 export const assignUserToTask = async (req, res) => {
-    const { taskId, userId } = req.params;
+    const { taskId } = req.params;
+    const { assignee } = req.body;
     try {
-        const task = await Task.findById(taskId);
+        const task = await Task.findByIdAndUpdate(taskId, { assignee }, { new: true });
         if (!task) {
             return res.status(404).json({ error: 'Sarcina nu a fost găsită.' });
         }
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ error: 'Utilizatorul nu a fost găsit.' });
-        }
-
-        task.assignee = user;
-        await task.save();
-
         res.json(task);
     } catch (error) {
         res.status(400).json({ error: 'Eroare la asignarea utilizatorului sarcinii.' });

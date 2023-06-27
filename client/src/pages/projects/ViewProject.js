@@ -96,6 +96,7 @@ const ViewProject = () => {
                     <Header as='h1' textAlign='center'>Tasks</Header>
                     <ProjectTasks tasks={tasks}
                         getTasks={getProjectTasks}
+                        project={project}
                     />
                     <ToastContainer />
                     {/* </Segment> */}
