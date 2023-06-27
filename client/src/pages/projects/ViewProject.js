@@ -93,7 +93,7 @@ const ViewProject = () => {
             <Grid.Row stretched>
                 <Grid.Column>
                     {/* <Segment> */}
-                    <Header as='h1' textAlign='center'>Board</Header>
+                    <Header as='h1' textAlign='center'>Tasks</Header>
                     <ProjectTasks tasks={tasks}
                         getTasks={getProjectTasks}
                     />

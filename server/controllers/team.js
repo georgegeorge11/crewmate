@@ -100,19 +100,20 @@ export const deleteTeam = async (req, res) => {
 
 // Adaugă un membru în echipă
 export const addMemberToTeam = async (req, res) => {
-    const { teamId, memberId } = req.params;
+    const { teamId } = req.params;
+    const { memberId } = req.body;
     try {
         const team = await Team.findById(teamId);
         if (!team) {
             return res.status(404).json({ error: 'Echipa nu a fost găsită.' });
         }
 
-        const member = await User.findById(memberId);
-        if (!member) {
-            return res.status(404).json({ error: 'Membrul nu a fost găsit.' });
+        const members = await User.find({ _id: { $in: memberId } });
+        if (!members.length) {
+            return res.status(404).json({ error: 'Niciun membru nu a fost găsit.' });
         }
 
-        team.members.push(member);
+        team.members.push(...members);
         await team.save();
 
         res.json(team);

@@ -211,3 +211,38 @@ export const removeUserFromProject = async (userSelected, projectSelected, token
             .catch((err) => console.log(err));
     }
 }
+
+//add users to team
+export const addUsersToTeam = async (teamId, selectedUsers, token, getTeam) => {
+    try {
+        const response = await axios.post(
+            `http://localhost:5000/teams/team/${teamId}/members`,
+            { memberId: selectedUsers },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        console.log(response.data);
+
+        getTeam();
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+//remove user from team
+
+export const removeUserFromTeam = async (userId, teamId, token, close, getTeams) => {
+    if (userId) {
+        axios({
+            method: 'DELETE',
+            url: `http://localhost:5000/teams/team/${teamId}/members/${userId._id}`,
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((response) => {
+            toast.success('User removed successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            close();
+            getTeams();
+        })
+            .catch((err) => console.log(err));
+    }
+}

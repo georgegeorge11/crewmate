@@ -97,7 +97,6 @@ const ProjectsCard = ({ projects, getProjects, teamSelected }) => {
         return formattedDate;
     };
     return (<div style={{ display: 'flex', flexWrap: 'wrap' }}>
-
         {projects.map((project) => (
             <Card key={project._id} style={{ margin: '15px', width: '400px' }}>
                 <Card.Content>
@@ -119,9 +118,11 @@ const ProjectsCard = ({ projects, getProjects, teamSelected }) => {
                                 )
                             );
                         })}
-                        <Label size="large" style={{ marginRight: '10px', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleAddUser(project._id)} >
-                            {user.role === 'manager' && <Icon name="add user" />}
-                        </Label>
+                        {user.role === 'manager' && <Label size="large" style={{ marginRight: '10px', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleAddUser(project._id)} >
+                            <Icon name="add user" />
+                        </Label>}
+
+
                         <AddUsersToProject
                             users={users}
                             open={addModal}
@@ -144,15 +145,15 @@ const ProjectsCard = ({ projects, getProjects, teamSelected }) => {
                     <span onClick={() => navigateToProject(project._id)} style={{ cursor: 'pointer' }}>
                         <Icon name="eye" color="black" size="big" />
                     </span>
-                    <span style={{ cursor: 'pointer' }}
+                    {user.role === "manager" && <> <span style={{ cursor: 'pointer' }}
                         onClick={() => handleEditOpen(project)}
                     >
                         <Icon name="edit" color="blue" size="big" />
                     </span>
-                    <span style={{ cursor: 'pointer' }}
-                        onClick={() => handleDeleteProject(project)}>
-                        <Icon name="trash" color="red" size="big" />
-                    </span>
+                        <span style={{ cursor: 'pointer' }}
+                            onClick={() => handleDeleteProject(project)}>
+                            <Icon name="trash" color="red" size="big" />
+                        </span></>}
                 </Card.Content>
                 <EditProject
                     open={editModal}

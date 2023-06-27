@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Button, Card, Grid, Header, Icon } from 'semantic-ui-react';
+import { Button, Card, Grid, Header, Icon, Label } from 'semantic-ui-react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import ProjectsCard from '../projects/ProjectsCard';
 import AddProject from '../../components/modals/AddProject';
+import AddUsersToTeam from '../../components/modals/AddUsersToTeam';
+import RemoveUserFromTeam from '../../components/modals/RemoveUserFromTeam';
 const ViewTeam = () => {
     const token = useSelector((state) => state.token);
     const teamId = useSelector((state) => state.team);
@@ -13,7 +15,11 @@ const ViewTeam = () => {
     const [team, setTeam] = useState([]);
     const [projects, setProjects] = useState([]);
     const [addProject, setAddProject] = useState(false);
-
+    const [users, setUsers] = useState(false);
+    const [teamID, setTeamID] = useState(null);
+    const [userID, setUserID] = useState(null);
+    const [addUser, setAddUser] = useState(false);
+    const [removeUser, setRemoveUser] = useState(false);
 
     const getTeam = async () => {
         axios({
@@ -28,6 +34,21 @@ const ViewTeam = () => {
 
     useEffect(() => {
         getTeam();
+        // eslint-disable-next-line
+    }, []);
+    const getUsers = async () => {
+        axios({
+            method: 'GET',
+            url: `http://localhost:5000/users`,
+            headers: { Authorization: `Bearer ${token}` },
+        }).then((response) => {
+            setUsers(response.data);
+        })
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => {
+        getUsers();
         // eslint-disable-next-line
     }, []);
 
@@ -49,6 +70,26 @@ const ViewTeam = () => {
         setAddProject(false);
         getProjects();
     }
+
+    const handleAddUser = (team) => {
+        setAddUser(true);
+        setTeamID(team);
+    }
+    const handleAddUserClose = () => {
+        setAddUser(false);
+        setTeamID(null);
+    }
+    const handleRemoveUser = (employee, team) => {
+        setTeamID(team);
+        setUserID(employee);
+        setRemoveUser(true);
+    }
+    const handleRemoveUserClose = () => {
+        setTeamID(null);
+        setUserID(null);
+        setRemoveUser(false);
+    }
+
     useEffect(() => {
         getProjects();
         // eslint-disable-next-line
@@ -73,13 +114,53 @@ const ViewTeam = () => {
                         {team.description}
                     </Card.Description>
                     <Card.Description>
+                        Members:  {renderTeamMembers()}
 
+                        {user.role === 'manager' && <Label size="large" style={{ marginRight: '10px', marginLeft: '10px', cursor: 'pointer' }}
+                            onClick={() => handleAddUser(team._id)}
+                        >
+                            <Icon name="add user" />
+                        </Label>}
+                        <AddUsersToTeam
+                            open={addUser}
+                            close={handleAddUserClose}
+                            getTeam={getTeam}
+                            teamId={teamID}
+                        />
+                        <RemoveUserFromTeam
+                            open={removeUser}
+                            close={handleRemoveUserClose}
+                            getTeams={getTeam}
+                            userId={userID}
+                            teamId={teamID}
+                        />
                     </Card.Description>
                 </Card.Content>
             </Card>
 
         )
     }
+    const renderTeamMembers = () => {
+        if (!team || !team.members) {
+            return <div>Loading...</div>;
+        }
+        return team.members.map((member) => {
+            const employee = users.find((employee) => employee._id === member._id);
+            return (
+                employee && (
+                    <Label key={employee._id} size="large" style={{ margin: '5px' }}>
+                        {employee.fullName}
+                        {user.role === 'manager' && <span style={{ cursor: 'pointer' }}
+                            onClick={() => handleRemoveUser(employee, team._id)}
+                        >
+                            <Icon name="delete" />
+                        </span>}
+                    </Label>
+
+                )
+            );
+        })
+    };
 
     return (
         <Grid
@@ -96,6 +177,7 @@ const ViewTeam = () => {
                 }}>
                 <Grid.Column width={5}>
                     {renderTeam()}
+                    {/* {renderTeamMembers()} */}
                 </Grid.Column>
                 {user.role === "manager" &&
                     <div

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Container, Dropdown, Grid, Header, Icon, Label, Popup } from 'semantic-ui-react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { changeStatus, updatePriority } from '../../actions/functions';
+import { toast } from 'react-toastify';
 
 const ProjectTasks = ({ tasks, getTasks }) => {
     const user = useSelector((state) => state.user);
@@ -38,10 +39,35 @@ const ProjectTasks = ({ tasks, getTasks }) => {
     const handleDragUpdate = (result) => {
         const { draggableId, destination } = result;
 
-        // Verificați dacă există o destinație validă și dacă aceasta s-a schimbat
+
         if (destination && destination.droppableId !== result.source.droppableId) {
             const newStatus = destination.droppableId;
-            changeStatus(draggableId, newStatus, token, getTasks);
+            const task = tasks.find((task) => task._id === draggableId);
+
+
+            if (task.assignee === user._id || user.role === "manager") {
+                changeStatus(draggableId, newStatus, token, getTasks);
+            } else {
+
+                toast.error('You can only update tasks assigned to you!', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            }
+        }
+    };
+    const handlePriorityUpdate = (taskId, newPriority) => {
+        const task = tasks.find((task) => task._id === taskId);
+
+
+        if (task.assignee === user._id || user.role === 'manager') {
+            updatePriority(taskId, newPriority, token, getTasks);
+            toast.success('Priority updated successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        } else {
+            toast.error('You can only update priority for tasks assigned to you!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
         }
     };
 
@@ -64,8 +90,8 @@ const ProjectTasks = ({ tasks, getTasks }) => {
                     const columnTasks = kanbanTasks[column.status];
                     return (
                         <Grid.Column key={column.status}>
-                            <Container style={{ marginBottom: '1em' }}>
-                                <Header as="h2">{column.title}</Header>
+                            <Container style={{ marginBottom: '1em', marginTop: '1em' }}>
+                                <Header as="h2" textAlign='center'>{column.title}</Header>
                             </Container>
                             <Droppable droppableId={column.status}>
                                 {(provided) => (
@@ -133,8 +159,8 @@ const ProjectTasks = ({ tasks, getTasks }) => {
                                                                     ]}
                                                                     value={selectedPriority}
                                                                     onChange={(e, { value }) => {
-                                                                        setSelectedPriority(value);
-                                                                        updatePriority(task._id, value, token, getTasks);
+
+                                                                        handlePriorityUpdate(task._id, value)
                                                                     }}
                                                                 />
                                                             </Popup>
@@ -156,16 +182,41 @@ const ProjectTasks = ({ tasks, getTasks }) => {
                                                         <p>
                                                             <strong>Due Date:</strong> {formatDate(task.dueDate)}
                                                         </p>
-                                                        {task.assignee === user._id && (
-                                                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                        {user.role === "manager" ?
+                                                            (<div style={{ display: 'flex', justifyContent: 'flex-end', gap: '5px' }}>
+                                                                <Label
+                                                                    size="medium"
+                                                                    color='teal'
+                                                                    style={{ cursor: 'pointer' }}>
+                                                                    <b>Reassign</b>
+                                                                </Label>
                                                                 <Icon
                                                                     name="edit"
                                                                     color="blue"
                                                                     size="large"
                                                                     style={{ cursor: 'pointer' }}
                                                                 />
-                                                            </div>
-                                                        )}
+                                                                <Icon
+                                                                    name="trash"
+                                                                    color="red"
+                                                                    size="large"
+                                                                    style={{ cursor: 'pointer' }}
+                                                                />
+                                                            </div>)
+                                                            :
+                                                            (task.assignee === user._id && (
+                                                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                                    <Icon
+                                                                        name="edit"
+                                                                        color="blue"
+                                                                        size="large"
+                                                                        style={{ cursor: 'pointer' }}
+                                                                    />
+                                                                </div>)
+                                                            )
+                                                        }
+
+
                                                     </div>
                                                 )}
                                             </Draggable>

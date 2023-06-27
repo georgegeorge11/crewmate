@@ -10,7 +10,7 @@ teamRouter.get('/userTeam/:userId', verifyToken, getTeamByUser);
 teamRouter.post('/createTeam', verifyToken, createTeam);
 teamRouter.put('/team/:teamId', verifyToken, updateTeam);
 teamRouter.delete('/team/:teamId', verifyToken, deleteTeam);
-teamRouter.post('/team/:teamId/members/:memberId', verifyToken, addMemberToTeam);
+teamRouter.post('/team/:teamId/members', verifyToken, addMemberToTeam);
 teamRouter.delete('/team/:teamId/members/:memberId', verifyToken, removeMemberFromTeam);
 teamRouter.post('/team/:teamId/projects/:projectId', verifyToken, addProjectToTeam);
 teamRouter.delete('/team/:teamId/projects/:projectId', verifyToken, removeProjectFromTeam);
