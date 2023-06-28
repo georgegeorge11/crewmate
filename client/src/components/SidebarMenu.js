@@ -51,12 +51,6 @@ const SidebarMenu = () => {
                     Dashboard
                 </Menu.Item>
             </Link>
-            <Link to='/inbox'>
-                <Menu.Item name='user'>
-                    <Icon name='inbox' />
-                    Inbox
-                </Menu.Item>
-            </Link>
             <Link to='/projects'>
                 <Menu.Item name='projects'>
                     <Icon name='folder open' />
@@ -115,10 +109,6 @@ const SidebarMenu = () => {
                 <Dropdown.Item as={Link} to='/dashboard'>
                     <Icon name='home' />
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to='/inbox'>
-                    <Icon name='inbox' />
-
-                </Dropdown.Item>
                 <Dropdown.Item as={Link} to='/projects'>
                     <Icon name='folder open' />
 
@@ -126,6 +116,9 @@ const SidebarMenu = () => {
                 <Dropdown.Item as={Link} to='/teams'>
                     <Icon name='group' />
 
+                </Dropdown.Item>
+                <Dropdown.Item as={Link} to='/calendar'>
+                    <Icon name='calendar' />
                 </Dropdown.Item>
                 <Dropdown.Item as={Link} to='/reports'>
                     <Icon name='chart pie' />

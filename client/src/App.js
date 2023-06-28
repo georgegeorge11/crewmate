@@ -12,6 +12,7 @@ import ViewProject from "./pages/projects/ViewProject";
 import ViewTeam from "./pages/teams/ViewTeam";
 import CalendarProject from "./pages/calendar/Calendar";
 import Admin from "./pages/admin/Admin";
+import Account from "./pages/account/Account";
 
 
 
@@ -35,7 +36,7 @@ function App() {
           <Route path="/viewProject/:id" element={<ViewProject />} />
           <Route path="/viewTeam/:id" element={<ViewTeam />} />
           <Route path="/calendar" element={<CalendarProject />} />
-
+          <Route path="/account" element={<Account />} />
         </Route>
       </Route>
 

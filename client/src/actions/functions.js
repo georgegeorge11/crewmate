@@ -1,5 +1,42 @@
 import axios from "axios";
+
 import { toast } from "react-toastify";
+
+//update user information
+
+export const updateUser = async (user, fullName, username, password, email, role, token, dispatch, setLogin) => {
+
+    axios.put(`http://localhost:5000/users/user/${user._id}`,
+        {
+            fullName,
+            username,
+            password,
+            email,
+            role
+        },
+        {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((response) => {
+            console.log(response.data);
+            console.log(response);
+            const updatedUser = response.data;
+            if (updatedUser) {
+                dispatch(
+                    setLogin({
+                        user: updatedUser,
+                        token: token
+                    }))
+                toast.success('User information updated successfully!', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            }
+
+
+        })
+        .catch((err) => console.log(err));
+
+
+}
 
 //change task status
 export const changeStatus = async (taskId, newStatus, token, getTasks) => {
@@ -24,6 +61,7 @@ export const updatePriority = async (id, newPriority, token, getTasks) => {
             { priority: newPriority },
             { headers: { Authorization: `Bearer ${token}` } }
         );
+
     } catch (error) {
         console.log(error);
     }
