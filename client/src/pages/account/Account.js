@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Grid, Header, Icon, Input } from 'semantic-ui-react';
-import { updateUser } from '../../actions/functions';
+import { updateAccount } from '../../actions/functions';
 import { ToastContainer } from 'react-toastify';
-import { setLogin, setUser } from '../../actions';
+import { setLogin } from '../../actions';
 const Account = () => {
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
@@ -30,7 +30,7 @@ const Account = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await updateUser(user, fullName, username, password, email, role, token, dispatch, setLogin);
+        await updateAccount(user, fullName, username, password, email, role, token, dispatch, setLogin);
     };
 
     return (

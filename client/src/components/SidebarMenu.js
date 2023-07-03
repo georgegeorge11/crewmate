@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar, Menu, Icon, Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLogout } from '../actions';
 
 const SidebarMenu = () => {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state.user);
     const handleSignOut = () => {
         dispatch(
             setLogout({
@@ -57,6 +57,12 @@ const SidebarMenu = () => {
                     Projects
                 </Menu.Item>
             </Link>
+            {user.role === "admin" && <Link to='/admin'>
+                <Menu.Item name='users'>
+                    <Icon name='group' />
+                    Users
+                </Menu.Item>
+            </Link>}
             <Link to='/teams'>
                 <Menu.Item name='team'>
                     <Icon name='group' />
@@ -113,6 +119,11 @@ const SidebarMenu = () => {
                     <Icon name='folder open' />
 
                 </Dropdown.Item>
+                {user.role === "admin" &&
+                    <Dropdown.Item as={Link} to='/admin'>
+                        <Icon name='group' />
+
+                    </Dropdown.Item>}
                 <Dropdown.Item as={Link} to='/teams'>
                     <Icon name='group' />
 

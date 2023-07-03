@@ -17,27 +17,51 @@ const CalendarProject = () => {
   const [tasks, setTasks] = useState([]);
 
   const getProjects = async () => {
-    axios({
-      method: 'GET',
-      url: `http://localhost:5000/projects/userProject/${user._id}`,
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => {
-        setProjects(response.data);
+    if (user.role === "admin") {
+      axios({
+        method: 'GET',
+        url: `http://localhost:5000/projects`,
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((err) => console.log(err));
+        .then((response) => {
+          setProjects(response.data);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      axios({
+        method: 'GET',
+        url: `http://localhost:5000/projects/userProject/${user._id}`,
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => {
+          setProjects(response.data);
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const getTasks = async () => {
-    axios({
-      method: 'GET',
-      url: `http://localhost:5000/tasks/userTask/${user._id}`,
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => {
-        setTasks(response.data);
+    if (user.role === "admin") {
+      axios({
+        method: 'GET',
+        url: `http://localhost:5000/tasks`,
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((err) => console.log(err));
+        .then((response) => {
+          setTasks(response.data);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      axios({
+        method: 'GET',
+        url: `http://localhost:5000/tasks/userTask/${user._id}`,
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => {
+          setTasks(response.data);
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   useEffect(() => {
@@ -87,7 +111,7 @@ const CalendarProject = () => {
     <Grid style={{ marginLeft: '9rem' }}>
       <Grid.Row style={{ display: 'flex', gap: '40px', marginLeft: '1em', marginTop: '3em' }}>
         <List divided relaxed>
-          <Header as="h1">Your projects</Header>
+          <Header as="h1">Projects</Header>
           {projects.map((project) => (
             <List.Item key={project._id} onClick={() => handleProjectClick(project._id)}>
               <List.Icon name="folder" size="large" verticalAlign="middle" />
@@ -96,7 +120,7 @@ const CalendarProject = () => {
               </List.Content>
             </List.Item>
           ))}
-          <Header as="h1">Your Tasks</Header>
+          <Header as="h1">Tasks</Header>
           {tasks.map((task) => (
             <List.Item key={task._id}>
               <List.Icon name="tasks" size="large" verticalAlign="middle" />

@@ -2,9 +2,53 @@ import axios from "axios";
 
 import { toast } from "react-toastify";
 
-//update user information
+//create new user
+export const createUser = async (fulllName, username, email, password, role, token, getUsers, close) => {
+    axios.post('http://localhost:5000/users/createUser', {
+        fullName: fulllName,
+        username: username,
+        password: password,
+        email: email,
+        role: role
+    },
+        {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((response) => {
+            toast.success('User created successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            getUsers();
+            close();
 
-export const updateUser = async (user, fullName, username, password, email, role, token, dispatch, setLogin) => {
+        })
+        .catch((err) => console.log(err));
+}
+
+//update users
+export const updateUser = async (user, fullName, username, password, email, role, token, getUsers, close) => {
+    axios.put(`http://localhost:5000/users/user/${user._id}`,
+        {
+            fullName,
+            username,
+            password,
+            email,
+            role
+        },
+        {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((response) => {
+            toast.success('User information updated successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            getUsers();
+            close();
+
+        })
+        .catch((err) => console.log(err));
+}
+
+//update account information
+export const updateAccount = async (user, fullName, username, password, email, role, token, dispatch, setLogin) => {
 
     axios.put(`http://localhost:5000/users/user/${user._id}`,
         {
@@ -36,6 +80,25 @@ export const updateUser = async (user, fullName, username, password, email, role
         .catch((err) => console.log(err));
 
 
+}
+
+//delete user
+
+export const deleteUser = async (user, token, getUsers, close) => {
+    if (user) {
+        axios({
+            method: 'DELETE',
+            url: `http://localhost:5000/users/user/${user._id}`,
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((response) => {
+            toast.success('User deleted successfully!', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            close();
+            getUsers();
+        })
+            .catch((err) => console.log(err));
+    }
 }
 
 //change task status

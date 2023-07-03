@@ -20,8 +20,6 @@ const Login = () => {
             })
             .then((response) => {
                 const loggedInResponse = response.data;
-                const role = loggedInResponse.user.role;
-
                 if (loggedInResponse) {
                     dispatch(
                         setLogin({
@@ -34,12 +32,8 @@ const Login = () => {
                         position: toast.POSITION.TOP_RIGHT
                     });
                 }
-                if (role === "admin") {
-                    navigate("/admin");
 
-                } else {
-                    navigate("/dashboard");
-                }
+                navigate("/dashboard");
             })
             .catch((error) => {
                 console.log(error);

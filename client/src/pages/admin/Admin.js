@@ -1,20 +1,14 @@
 import React from 'react'
 import ManageUsers from './ManageUsers'
-import { Grid, Header } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 
 const Admin = () => {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Header as='h1' textAlign='center' style={{ marginTop: '1em' }}>CREWMATE</Header>
-
-            <Grid style={{ margin: '1rem' }}>
-                <Grid.Row>
-                    <ManageUsers />
-                </Grid.Row>
-
-            </Grid>
-
-        </div>
+        <Grid style={{ marginLeft: '9rem' }}>
+            <Grid.Row style={{ marginTop: '2rem' }}>
+                <ManageUsers />
+            </Grid.Row>
+        </Grid>
     )
 }
 

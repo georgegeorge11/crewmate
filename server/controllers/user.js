@@ -62,3 +62,30 @@ export const updateUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+export const createUser = async (req, res) => {
+    try {
+        const {
+            fullName,
+            username,
+            password,
+            email,
+            role
+        } = req.body;
+        const salt = await bcrypt.genSalt();
+        const hashPassword = await bcrypt.hash(password, salt);
+        const user = new User({
+            fullName,
+            username,
+            password: hashPassword,
+            email,
+            role
+        });
+        const savedUser = await user.save();
+        savedUser.password = password;
+        res.status(201).json(savedUser);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+
+    }
+}

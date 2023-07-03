@@ -24,14 +24,25 @@ const Teams = () => {
     };
 
     const getTeams = async () => {
-        axios({
-            method: "GET",
-            url: `http://localhost:5000/teams/userTeam/${user._id}`,
-            headers: { Authorization: `Bearer ${token}` }
+        if (user.role === "admin") {
+            axios({
+                method: "GET",
+                url: `http://localhost:5000/teams`,
+                headers: { Authorization: `Bearer ${token}` }
+            }
+            ).then((response) => {
+                setTeams(response.data);
+            }).catch((err) => console.log(err));
+        } else {
+            axios({
+                method: "GET",
+                url: `http://localhost:5000/teams/userTeam/${user._id}`,
+                headers: { Authorization: `Bearer ${token}` }
+            }
+            ).then((response) => {
+                setTeams(response.data);
+            }).catch((err) => console.log(err));
         }
-        ).then((response) => {
-            setTeams(response.data);
-        }).catch((err) => console.log(err));
     }
 
     useEffect(() => {

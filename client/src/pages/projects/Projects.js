@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, Grid, Header, Icon } from 'semantic-ui-react';
 import { setProject } from '../../actions';
-
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -21,15 +20,27 @@ const Projects = () => {
     };
 
     const getProjects = async () => {
-        axios({
-            method: "GET",
-            url: `http://localhost:5000/projects/userProject/${user._id}`,
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then((response) => {
-                setProjects(response.data);
+        if (user.role === "admin") {
+            axios({
+                method: "GET",
+                url: `http://localhost:5000/projects`,
+                headers: { Authorization: `Bearer ${token}` }
             })
-            .catch((err) => console.log(err));
+                .then((response) => {
+                    setProjects(response.data);
+                })
+                .catch((err) => console.log(err));
+        } else {
+            axios({
+                method: "GET",
+                url: `http://localhost:5000/projects/userProject/${user._id}`,
+                headers: { Authorization: `Bearer ${token}` }
+            })
+                .then((response) => {
+                    setProjects(response.data);
+                })
+                .catch((err) => console.log(err));
+        }
     };
 
     useEffect(() => {
@@ -69,6 +80,7 @@ const Projects = () => {
                 <Header as="h1">Projects</Header>
             </Grid.Row>
             {renderProjects()}
+
         </Grid>
     );
 };
