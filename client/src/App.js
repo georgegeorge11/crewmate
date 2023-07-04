@@ -14,11 +14,6 @@ import CalendarProject from "./pages/calendar/Calendar";
 import Admin from "./pages/admin/Admin";
 import Account from "./pages/account/Account";
 
-
-
-
-
-
 function App() {
   return (
 

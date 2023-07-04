@@ -58,9 +58,12 @@ const ProjectTasks = ({ project, tasks, getTasks }) => {
 
             if (task.assignee === user._id || user.role === "manager") {
                 changeStatus(draggableId, newStatus, token, getTasks);
+                toast.success('Status of task changed successfully!', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
             } else {
 
-                toast.error('You can only update tasks assigned to you!', {
+                toast.error('You can only update status for tasks assigned to you!', {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             }
@@ -72,7 +75,7 @@ const ProjectTasks = ({ project, tasks, getTasks }) => {
 
         if (task.assignee === user._id || user.role === 'manager') {
             updatePriority(taskId, newPriority, token, getTasks);
-            toast.success('Priority updated successfully!', {
+            toast.success('Priority of task changed successfully!', {
                 position: toast.POSITION.TOP_RIGHT,
             });
         } else {

@@ -52,9 +52,7 @@ const TeamList = () => {
 
             )
         }
-        return <div>
-            <h3>You currently do not have any issues assigned to you.</h3>
-        </div>
+
     }
 
     return (

@@ -23,7 +23,7 @@ const SidebarMenu = () => {
         };
 
         window.addEventListener('resize', handleResize);
-        handleResize(); // Initial check on component mount
+        handleResize(); 
 
         return () => {
             window.removeEventListener('resize', handleResize);

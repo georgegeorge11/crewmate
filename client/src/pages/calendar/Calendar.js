@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import './calendar.css';
 
 const localizer = momentLocalizer(moment);
 
@@ -78,9 +77,9 @@ const CalendarProject = () => {
   const eventStyleGetter = (event, start, end, isSelected) => {
     let backgroundColor = '';
     if (event.task) {
-      backgroundColor = '#FFD700'; // Set a different color for tasks
+      backgroundColor = '#FFD700';
     } else {
-      backgroundColor = '#1976D2'; // Set the default color for projects
+      backgroundColor = '#1976D2'; 
     }
 
     return {

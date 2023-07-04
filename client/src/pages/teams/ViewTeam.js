@@ -177,7 +177,7 @@ const ViewTeam = () => {
                 }}>
                 <Grid.Column width={5}>
                     {renderTeam()}
-                    {/* {renderTeamMembers()} */}
+                  
                 </Grid.Column>
                 {user.role === "manager" &&
                     <div

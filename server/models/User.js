@@ -5,8 +5,15 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     fullName: { type: String, required: true },
-    role: { type: String, enum: ['admin', 'manager', 'employee'], default: 'employee' },
-    teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
+    role: {
+        type: String,
+        enum: ['admin', 'manager', 'employee'],
+        default: 'employee'
+    },
+    teams: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Team'
+    }],
 
 });
 

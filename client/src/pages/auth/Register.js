@@ -65,13 +65,53 @@ const Register = () => {
                                 {' '}Create account
                             </Header>
                             <div className='form' >
-                                <Input size='large' type='text' name={fullname} icon='user' iconPosition='left' color='black' placeholder='Fullname' onChange={(e) => setFullname(e.target.value)} style={{ width: '100%' }}></Input>
-                                <Input size='large' type='text' name={username} icon='user' iconPosition='left' placeholder='Username' onChange={(e) => setUsername(e.target.value)} style={{ width: '100%' }}></Input>
-                                <Input size='large' type='email' name={email} icon='at' iconPosition='left' placeholder='Email' onChange={(e) => setEmail(e.target.value)} style={{ width: '100%' }}></Input>
-                                <Input size='large' type='password' name={password} icon='lock' iconPosition='left' placeholder='Password' onChange={(e) => setPassword(e.target.value)} style={{ width: '100%' }}></Input>
-                                <Input size='large' type='password' name={confirmPassword} icon='lock' iconPosition='left' placeholder='Confirm Password' onChange={(e) => setConfirmPassword(e.target.value)} style={{ width: '100%' }}></Input>
+                                <Input
+                                    size='large'
+                                    type='text'
+                                    name={fullname}
+                                    icon='user'
+                                    iconPosition='left'
+                                    color='black'
+                                    placeholder='Fullname'
+                                    onChange={(e) => setFullname(e.target.value)} style={{ width: '100%' }} />
+                                <Input
+                                    size='large'
+                                    type='text'
+                                    name={username}
+                                    icon='user'
+                                    iconPosition='left'
+                                    placeholder='Username'
+                                    onChange={(e) => setUsername(e.target.value)} style={{ width: '100%' }} />
+                                <Input
+                                    size='large'
+                                    type='email'
+                                    name={email}
+                                    icon='at'
+                                    iconPosition='left'
+                                    placeholder='Email'
+                                    onChange={(e) => setEmail(e.target.value)} style={{ width: '100%' }} />
+                                <Input
+                                    size='large'
+                                    type='password'
+                                    name={password}
+                                    icon='lock'
+                                    iconPosition='left'
+                                    placeholder='Password'
+                                    onChange={(e) => setPassword(e.target.value)} style={{ width: '100%' }} />
+                                <Input
+                                    size='large'
+                                    type='password'
+                                    name={confirmPassword}
+                                    icon='lock'
+                                    iconPosition='left'
+                                    placeholder='Confirm Password'
+                                    onChange={(e) => setConfirmPassword(e.target.value)} style={{ width: '100%' }} />
                             </div>
-                            <Button type="submit" primary fluid size='large'>Register</Button>
+                            <Button
+                                type="submit"
+                                primary
+                                fluid
+                                size='large'>Register</Button>
                             <ToastContainer />
                             <Header as='h4'> Already have an account? <Link to='/login'>Login here</Link></Header>
                         </Form>

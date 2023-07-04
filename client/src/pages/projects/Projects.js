@@ -60,14 +60,14 @@ const Projects = () => {
                         <span onClick={() => navigateToProject(project._id)} style={{ cursor: 'pointer' }}>
                             <Icon name="eye" color="black" size="big" />
                         </span>
-                        {user.role === "manager" ? (<div>
+                        {user.role === "manager" && <div>
                             <span>
                                 <Icon name="edit" color="blue" size="big" />
                             </span>
                             <span style={{ cursor: 'pointer' }} >
                                 <Icon name="trash" color="red" size="big" />
                             </span>
-                        </div>) : null}
+                        </div>}
                     </Card.Content>
                 </Card>
             ));

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Header, List } from 'semantic-ui-react';
 import { cardStyle } from '../../components/cardStyle';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { setProject } from '../../actions';
 
 
@@ -35,16 +35,15 @@ const ProjectList = () => {
         // eslint-disable-next-line
     }, []);
 
-    const renderTeams = () => {
+    const renderProjects = () => {
         if (projects.length) {
             return projects.map(project =>
                 <List.Item key={project._id}>
                     <List.Icon name='folder open' size='large' verticalAlign='middle' />
                     <List.Content>
                         <span onClick={() => navigateToProject(project._id)} style={{ cursor: 'pointer' }}>
-                       {project.name}
-                    </span>
-                        {/* <List.Description as='a'>{team.description}</List.Description> */}
+                            {project.name}
+                        </span>
                     </List.Content>
                 </List.Item>
 
@@ -60,7 +59,7 @@ const ProjectList = () => {
                 <Card.Meta>Projects</Card.Meta>
 
                 <List divided relaxed style={{ overflowY: 'scroll', height: '150px' }}>
-                    {renderTeams()}
+                    {renderProjects()}
                 </List>
             </Card.Content>
         </Card>

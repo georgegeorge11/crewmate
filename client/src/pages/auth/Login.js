@@ -20,6 +20,7 @@ const Login = () => {
             })
             .then((response) => {
                 const loggedInResponse = response.data;
+
                 if (loggedInResponse) {
                     dispatch(
                         setLogin({
@@ -31,12 +32,15 @@ const Login = () => {
                     toast.success('Login succesfully !', {
                         position: toast.POSITION.TOP_RIGHT
                     });
+
+                    setTimeout(() => navigate("/dashboard"), 1000)
                 }
 
-                navigate("/dashboard");
+
             })
             .catch((error) => {
                 console.log(error);
+                toast.error('Password or username are incorrect!')
             });
     }
     const handleLogin = async (e) => {
@@ -62,13 +66,29 @@ const Login = () => {
                                 {' '}Welcome Back
                             </Header>
                             <div className='form'>
-                                <Input size='large' type='text' name={username} icon='user' iconPosition='left' placeholder='Username' onChange={(e) => setUsername(e.target.value)} style={{ width: '100%' }} />
-                                <Input size='large' type='password' name={password} icon='lock' iconPosition='left' placeholder='Password' onChange={(e) => setPassword(e.target.value)} style={{ width: '100%' }} />
+                                <Input
+                                    size='large'
+                                    type='text'
+                                    name={username}
+                                    icon='user'
+                                    iconPosition='left' placeholder='Username' onChange={(e) => setUsername(e.target.value)} style={{ width: '100%' }} />
+                                <Input
+                                    size='large'
+                                    type='password'
+                                    name={password}
+                                    icon='lock'
+                                    iconPosition='left'
+                                    placeholder='Password' onChange={(e) => setPassword(e.target.value)} style={{ width: '100%' }} />
                             </div>
-                            <Button type="submit" primary fluid size='large'>Login</Button>
-                            <ToastContainer />
+                            <Button
+                                type="submit"
+                                primary
+                                fluid
+                                size='large'>Login</Button>
+
                             <Header as='h4'> Don't have an account? <Link to='/register'>Register here</Link></Header>
                         </Form>
+                        <ToastContainer />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
